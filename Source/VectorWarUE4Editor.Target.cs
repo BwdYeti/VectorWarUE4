@@ -9,6 +9,6 @@ public class VectorWarUE4EditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "VectorWarUE4" } );
+		ExtraModuleNames.AddRange( new string[] { "VectorWarUE4", "VectorWar" } );
 	}
 }

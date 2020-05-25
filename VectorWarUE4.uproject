@@ -8,6 +8,11 @@
 			"Name": "VectorWarUE4",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "VectorWar",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
