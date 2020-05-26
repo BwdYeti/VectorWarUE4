@@ -1,8 +1,17 @@
+#include "gdi_renderer.h"
+#include "vectorwar.h"
+
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>
-#include "vectorwar.h"
-#include "gdi_renderer.h"
+#include <minwindef.h>
+#include <wingdi.h>
+#include <timeapi.h>
 
 #define  PROGRESS_BAR_WIDTH        100
 #define  PROGRESS_BAR_TOP_OFFSET    22
@@ -210,3 +219,8 @@ GDIRenderer::CreateGDIFont(HDC)
                       L"Tahoma");                // Font Name
 
 }
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"

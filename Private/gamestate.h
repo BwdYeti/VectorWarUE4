@@ -1,6 +1,13 @@
 #ifndef _GAMESTATE_H_
 #define _GAMESTATE_H_
 
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <windef.h>
+
 /*
  * gamestate.h --
  *
@@ -63,5 +70,10 @@ struct GameState {
    int         _num_ships;
    Ship        _ships[MAX_SHIPS];
 };
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 
 #endif

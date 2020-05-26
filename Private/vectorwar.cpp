@@ -1,10 +1,10 @@
+#include "vectorwar.h"
 #include <windows.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include <math.h>
 #include <stdio.h>
 #include "gdi_renderer.h"
-#include "vectorwar.h"
 #include "ggpo_perfmon.h"
 
 //#define SYNC_TEST    // test: turn on synctest

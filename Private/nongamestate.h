@@ -1,7 +1,7 @@
 #ifndef _NON_GAMESTATE_H_
 #define _NON_GAMESTATE_H_
 
-#include "ggponet.h"
+#include "include/ggponet.h"
 
 #define MAX_PLAYERS     64
 

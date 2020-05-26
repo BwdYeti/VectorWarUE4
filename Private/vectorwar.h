@@ -1,7 +1,13 @@
 #ifndef _VECTORWAR_H
 #define _VECTORWAR_H
 
-#include "ggponet.h"
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <windef.h>
+#include "include/ggponet.h"
 
 /*
  * vectorwar.h --
@@ -30,5 +36,10 @@ void VectorWar_Exit();
 
 #define ARRAY_SIZE(n)      (sizeof(n) / sizeof(n[0]))
 #define FRAME_DELAY        2
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 
 #endif
