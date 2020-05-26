@@ -113,7 +113,7 @@ vw_advance_frame_callback(int)
 
    // Make sure we fetch new inputs from GGPO and use those to update
    // the game state instead of reading from the keyboard.
-   ggpo_synchronize_input(ggpo, (void *)inputs, sizeof(int) * MAX_SHIPS, &disconnect_flags);
+   GGPONet::ggpo_synchronize_input(ggpo, (void *)inputs, sizeof(int) * MAX_SHIPS, &disconnect_flags);
    VectorWar_AdvanceFrame(inputs, disconnect_flags);
    return true;
 }
@@ -226,28 +226,28 @@ VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer 
    cb.log_game_state  = vw_log_game_state;
 
 #if defined(SYNC_TEST)
-   result = ggpo_start_synctest(&ggpo, &cb, "vectorwar", num_players, sizeof(int), 1);
+   result = GGPONet::ggpo_start_synctest(&ggpo, &cb, "vectorwar", num_players, sizeof(int), 1);
 #else
-   result = ggpo_start_session(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport);
+   result = GGPONet::ggpo_start_session(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport);
 #endif
 
    // automatically disconnect clients after 3000 ms and start our count-down timer
    // for disconnects after 1000 ms.   To completely disable disconnects, simply use
    // a value of 0 for ggpo_set_disconnect_timeout.
-   ggpo_set_disconnect_timeout(ggpo, 3000);
-   ggpo_set_disconnect_notify_start(ggpo, 1000);
+   GGPONet::ggpo_set_disconnect_timeout(ggpo, 3000);
+   GGPONet::ggpo_set_disconnect_notify_start(ggpo, 1000);
 
    int i;
    for (i = 0; i < num_players + num_spectators; i++) {
       GGPOPlayerHandle handle;
-      result = ggpo_add_player(ggpo, players + i, &handle);
+      result = GGPONet::ggpo_add_player(ggpo, players + i, &handle);
       ngs.players[i].handle = handle;
       ngs.players[i].type = players[i].type;
       if (players[i].type == GGPO_PLAYERTYPE_LOCAL) {
          ngs.players[i].connect_progress = 100;
          ngs.local_player_handle = handle;
          ngs.SetConnectState(handle, Connecting);
-         ggpo_set_frame_delay(ggpo, handle, FRAME_DELAY);
+         GGPONet::ggpo_set_frame_delay(ggpo, handle, FRAME_DELAY);
       } else {
          ngs.players[i].connect_progress = 0;
       }
@@ -256,7 +256,7 @@ VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer 
    ggpoutil_perfmon_init(hwnd);
    renderer->SetStatusText("Connecting to peers.");
 
-   ggpo_try_synchronize_local(ggpo);
+   GGPONet::ggpo_try_synchronize_local(ggpo);
 }
 
 /*
@@ -284,7 +284,7 @@ VectorWar_InitSpectator(HWND hwnd, unsigned short localport, int num_players, ch
    cb.on_event        = vw_on_event_callback;
    cb.log_game_state  = vw_log_game_state;
 
-   result = ggpo_start_spectating(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport, host_ip, host_port);
+   result = GGPONet::ggpo_start_spectating(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport, host_ip, host_port);
 
    ggpoutil_perfmon_init(hwnd);
 
@@ -303,7 +303,7 @@ VectorWar_DisconnectPlayer(int player)
 {
    if (player < ngs.num_players) {
       char logbuf[128];
-      GGPOErrorCode result = ggpo_disconnect_player(ggpo, ngs.players[player].handle);
+      GGPOErrorCode result = GGPONet::ggpo_disconnect_player(ggpo, ngs.players[player].handle);
       if (GGPO_SUCCEEDED(result)) {
          sprintf_s(logbuf, ARRAYSIZE(logbuf), "Disconnected player %d.\n", player);
       } else {
@@ -346,7 +346,7 @@ void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags)
    }
 
    // Notify ggpo that we've moved forward exactly 1 frame.
-   ggpo_advance_frame(ggpo);
+   GGPONet::ggpo_advance_frame(ggpo);
 
    // Update the performance monitor display.
    GGPOPlayerHandle handles[MAX_PLAYERS];
@@ -411,14 +411,14 @@ VectorWar_RunFrame(HWND hwnd)
 #if defined(SYNC_TEST)
      input = rand(); // test: use random inputs to demonstrate sync testing
 #endif
-     result = ggpo_add_local_input(ggpo, ngs.local_player_handle, &input, sizeof(input));
+     result = GGPONet::ggpo_add_local_input(ggpo, ngs.local_player_handle, &input, sizeof(input));
   }
 
    // synchronize these inputs with ggpo.  If we have enough input to proceed
    // ggpo will modify the input list with the correct inputs to use and
    // return 1.
   if (GGPO_SUCCEEDED(result)) {
-     result = ggpo_synchronize_input(ggpo, (void *)inputs, sizeof(int) * MAX_SHIPS, &disconnect_flags);
+     result = GGPONet::ggpo_synchronize_input(ggpo, (void *)inputs, sizeof(int) * MAX_SHIPS, &disconnect_flags);
      if (GGPO_SUCCEEDED(result)) {
          // inputs[0] and inputs[1] contain the inputs for p1 and p2.  Advance
          // the game by 1 frame using those inputs.
@@ -437,7 +437,7 @@ VectorWar_RunFrame(HWND hwnd)
 void
 VectorWar_Idle(int time)
 {
-   ggpo_idle(ggpo, time);
+    GGPONet::ggpo_idle(ggpo, time);
 }
 
 void
@@ -447,7 +447,7 @@ VectorWar_Exit()
    memset(&ngs, 0, sizeof(ngs));
 
    if (ggpo) {
-      ggpo_close_session(ggpo);
+       GGPONet::ggpo_close_session(ggpo);
       ggpo = NULL;
    }
    delete renderer;

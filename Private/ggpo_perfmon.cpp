@@ -179,7 +179,7 @@ ggpoutil_perfmon_update(GGPOSession *ggpo, GGPOPlayerHandle players[], int num_p
 
 
    for (int j = 0; j < num_players; j++) {
-      ggpo_get_network_stats(ggpo, players[j], &stats);
+      GGPONet::ggpo_get_network_stats(ggpo, players[j], &stats);
 
       /*
        * Ping
