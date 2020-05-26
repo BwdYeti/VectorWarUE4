@@ -1,5 +1,6 @@
 #include "gdi_renderer.h"
 #include "vectorwar.h"
+#include "gamestate.h"
 
 // UE4: allow Windows platform types to avoid naming collisions
 //  this must be undone at the bottom of this file

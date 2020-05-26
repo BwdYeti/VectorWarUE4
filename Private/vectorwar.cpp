@@ -4,6 +4,7 @@
 #include <gl/glu.h>
 #include <math.h>
 #include <stdio.h>
+#include "gamestate.h"
 #include "gdi_renderer.h"
 #include "ggpo_perfmon.h"
 

@@ -1,7 +1,17 @@
 #ifndef _GDI_RENDERER_H_
 #define _GDI_RENDERER_H_
 
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <windef.h>
+#include "nongamestate.h"
 #include "renderer.h"
+
+// Forward declarations
+struct Ship;
 
 /*
  * renderer.h --
@@ -34,5 +44,10 @@ protected:
    HBRUSH         _bulletBrush;
    HBRUSH         _redBrush;
 };
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 
 #endif

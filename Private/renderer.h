@@ -1,8 +1,9 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_
 
-#include "gamestate.h"
-#include "nongamestate.h"
+// Forward declarations
+struct GameState;
+struct NonGameState;
 
 /*
  * renderer.h --

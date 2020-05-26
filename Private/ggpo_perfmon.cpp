@@ -1,7 +1,6 @@
 #include "ggpo_perfmon.h"
 #include <stdio.h>
 #include "resource.h"
-#include "include/ggponet.h"
 
 #define MAX_GRAPH_SIZE      4096
 #define MAX_FAIRNESS          20
