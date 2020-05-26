@@ -18,6 +18,11 @@
 #define  PROGRESS_BAR_HEIGHT         8
 #define  PROGRESS_TEXT_OFFSET       (PROGRESS_BAR_TOP_OFFSET + PROGRESS_BAR_HEIGHT + 4)
 
+// xxx: min() not defined for some reason
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 GDIRenderer::GDIRenderer(HWND hwnd) :
    _hwnd(hwnd)
 {
@@ -203,7 +208,7 @@ GDIRenderer::DrawConnectState(HDC hdc, Ship &ship, PlayerConnectionInfo &info)
 void
 GDIRenderer::CreateGDIFont(HDC)
 {
-   _font = CreateFont(-12,
+   _font = CreateFontW(-12,
                       0,                         // Width Of Font
                       0,                         // AnGDIe Of Escapement
                       0,                         // Orientation AnGDIe

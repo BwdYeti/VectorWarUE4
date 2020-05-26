@@ -12,6 +12,11 @@
 
 #include <winsock.h>
 
+// xxx: max() not defined for some reason
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
 LRESULT CALLBACK
 MainWindowProc(HWND hwnd,
                UINT uMsg,
