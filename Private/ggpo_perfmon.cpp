@@ -10,7 +10,7 @@
 static HWND _hwnd = NULL;
 static HWND _dialog = NULL;
 static HPEN _green_pen, _red_pen, _blue_pen, _yellow_pen, _grey_pen, _pink_pen, _fairness_pens[MAX_PLAYERS];
-static BOOL _shown = FALSE;
+static BOOL _shown = false;
 static int _last_text_update_time = 0;
 
 int _num_players;
@@ -96,7 +96,7 @@ ggpo_perfmon_dlgproc(HWND hwndDlg, UINT uMsg, WPARAM, LPARAM lParam)
    case WM_COMMAND:
       {
          ggpoutil_perfmon_toggle();
-         return TRUE;
+         return true;
       }
       break;
 
@@ -108,17 +108,17 @@ ggpo_perfmon_dlgproc(HWND hwndDlg, UINT uMsg, WPARAM, LPARAM lParam)
          } else {
             draw_network_graph_control(lpDrawItem);
          }
-         return TRUE;
+         return true;
       }
    case WM_INITDIALOG:
       {
          char pid[64];
-         snprintf(pid, ARRAYSIZE(pid), "%d", GetCurrentProcessId());
+         snprintf(pid, ARRAYSIZE(pid), "%lu", GetCurrentProcessId());
          SetWindowTextA(GetDlgItem(hwndDlg, IDC_PID), pid);   
-         return TRUE;
+         return true;
       }
    }
-   return FALSE;
+   return false;
 }
 
 void
@@ -211,8 +211,8 @@ ggpoutil_perfmon_update(GGPOSession *ggpo, GGPOPlayerHandle players[], int num_p
 
    int now = timeGetTime();
    if (_dialog) {
-      InvalidateRect(GetDlgItem(_dialog, IDC_FAIRNESS_GRAPH), NULL, FALSE);
-      InvalidateRect(GetDlgItem(_dialog, IDC_NETWORK_GRAPH), NULL, FALSE);
+      InvalidateRect(GetDlgItem(_dialog, IDC_FAIRNESS_GRAPH), NULL, false);
+      InvalidateRect(GetDlgItem(_dialog, IDC_NETWORK_GRAPH), NULL, false);
 
       if (now > _last_text_update_time + 500) {
          char fLocal[128], fRemote[128], fBandwidth[128];

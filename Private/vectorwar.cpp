@@ -162,7 +162,7 @@ vw_log_game_state(char *filename, unsigned char *buffer, int)
    if (fp) {
       GameState *gamestate = (GameState *)buffer;
       fprintf(fp, "GameState object.\n");
-      fprintf(fp, "  bounds: %d,%d x %d,%d.\n", gamestate->_bounds.left, gamestate->_bounds.top,
+      fprintf(fp, "  bounds: %ld,%ld x %ld,%ld.\n", gamestate->_bounds.left, gamestate->_bounds.top,
               gamestate->_bounds.right, gamestate->_bounds.bottom);
       fprintf(fp, "  num_ships: %d.\n", gamestate->_num_ships);
       for (int i = 0; i < gamestate->_num_ships; i++) {
