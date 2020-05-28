@@ -207,7 +207,7 @@ vw_free_buffer(void *buffer)
  * the video renderer and creates a new network session.
  */
 void
-VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer *players, int num_spectators)
+VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer *players, int num_spectators)
 {
    GGPOErrorCode result;
    renderer = new GDIRenderer(hwnd);
@@ -401,7 +401,7 @@ ReadInputs(HWND hwnd)
  * Run a single frame of the game.
  */
 void
-VectorWar_RunFrame(HWND hwnd)
+VectorWarHost::VectorWar_RunFrame(HWND hwnd)
 {
   GGPOErrorCode result = GGPO_OK;
   int disconnect_flags;
@@ -436,13 +436,13 @@ VectorWar_RunFrame(HWND hwnd)
  * for its internal bookkeeping.
  */
 void
-VectorWar_Idle(int time)
+VectorWarHost::VectorWar_Idle(int time)
 {
     GGPONet::ggpo_idle(ggpo, time);
 }
 
 void
-VectorWar_Exit()
+VectorWarHost::VectorWar_Exit()
 {
    memset(&gs, 0, sizeof(gs));
    memset(&ngs, 0, sizeof(ngs));

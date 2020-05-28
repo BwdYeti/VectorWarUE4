@@ -30,7 +30,7 @@ MainWindowProc(HWND hwnd,
       if (wParam == 'P') {
          ggpoutil_perfmon_toggle();
       } else if (wParam == VK_ESCAPE) {
-         VectorWar_Exit();
+         VectorWarHost::VectorWar_Exit();
 		 PostQuitMessage(0);
       } else if (wParam >= VK_F1 && wParam <= VK_F12) {
          VectorWar_DisconnectPlayer((int)(wParam - VK_F1));
@@ -48,7 +48,7 @@ MainWindowProc(HWND hwnd,
 }
 
 HWND
-CreateMainWindow(HINSTANCE hInstance)
+VectorWarHost::CreateMainWindow(HINSTANCE hInstance)
 {
    HWND hwnd;
    WNDCLASSEX wndclass = { 0 };
@@ -73,8 +73,14 @@ CreateMainWindow(HINSTANCE hInstance)
    return hwnd;
 }
 
+BOOL
+VectorWarHost::DestroyWindow(HWND hwnd)
+{
+    return VectorWar_DestroyWindow(hwnd);
+}
+
 void
-RunMainLoop(HWND hwnd)
+VectorWarHost::RunMainLoop(HWND hwnd)
 {
    MSG msg = { 0 };
    int start, next, now;
@@ -89,9 +95,9 @@ RunMainLoop(HWND hwnd)
          }
       }
       now = timeGetTime();
-      VectorWar_Idle(max(0, next - now - 1));
+      VectorWarHost::VectorWar_Idle(max(0, next - now - 1));
       if (now >= next) {
-         VectorWar_RunFrame(hwnd);
+         VectorWarHost::VectorWar_RunFrame(hwnd);
          next = now + (1000 / 60);
       }
    }
@@ -110,7 +116,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR,
     _In_ int)
 {
-   HWND hwnd = CreateMainWindow(hInstance);
+   HWND hwnd = VectorWarHost::CreateMainWindow(hInstance);
    int offset = 1, local_player = 0;
    WSADATA wd = { 0 };
    wchar_t wide_ip_buffer[128];
@@ -191,13 +197,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
          ::SetWindowPos(hwnd, NULL, window_offsets[local_player].x, window_offsets[local_player].y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
       }
 
-      VectorWar_Init(hwnd, local_port, num_players, players, num_spectators);
+      VectorWarHost::VectorWar_Init(hwnd, local_port, num_players, players, num_spectators);
    }
-   RunMainLoop(hwnd);
-   VectorWar_Exit();
-   WSACleanup();
-   DestroyWindow(hwnd);
+   VectorWarHost::RunMainLoop(hwnd);
+   VectorWarHost::VectorWar_Exit();
+   VectorWarHost::DestroyWindow(hwnd);
    return 0;
+}
+
+BOOL VectorWar_DestroyWindow(HWND hwnd)
+{
+    WSACleanup();
+    return DestroyWindow(hwnd);
 }
 
 // UE4: disallow windows platform types
