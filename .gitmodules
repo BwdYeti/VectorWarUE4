@@ -1,0 +1,6 @@
+[submodule "Source/VectorWar"]
+	path = Source/VectorWar
+	url = Source/VectorWar
+[submodule "Source/GGPOUE4"]
+	path = Source/GGPOUE4
+	url = Source/GGPOUE4

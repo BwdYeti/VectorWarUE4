@@ -7,6 +7,19 @@
 		{
 			"Name": "VectorWarUE4",
 			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		},
+		{
+			"Name": "VectorWar",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "GGPOUE4",
+			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	]
