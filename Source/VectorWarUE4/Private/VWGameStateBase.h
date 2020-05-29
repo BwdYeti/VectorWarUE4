@@ -22,6 +22,10 @@ public:
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="GGPO")
+	void OnSessionStarted();
+	virtual void OnSessionStarted_Implementation();
+
 private:
 	HWND StartSinglePlayerGGPOSession();
 	HWND StartGGPOPlayerSession(const uint16 LocalPort, const int32 NumPlayers, TArray<wchar_t*> PlayerParameters);

@@ -12,8 +12,14 @@ void AVWGameStateBase::BeginPlay()
     Super::BeginPlay();
 
     Hwnd = StartSinglePlayerGGPOSession();
+    // xxx: Hwnd = StartGGPOPlayerSession(7000, 4,
+    //    { L"local", L"127.0.0.1:7001", L"127.0.0.1:7002", L"127.0.0.1:7003" });
 
-    if (!Hwnd)
+    if (Hwnd)
+    {
+        OnSessionStarted();
+    }
+    else
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to create GGPO session"));
     }
@@ -113,3 +119,5 @@ HWND AVWGameStateBase::StartGGPOPlayerSession(
 
     return hwnd;
 }
+
+void AVWGameStateBase::OnSessionStarted_Implementation() { }
