@@ -3,7 +3,11 @@ Bin/
 Binaries/
 DerivedDataCache/
 Intermediate/
+Plugins/*/Intermediate/
 Saved/
+
+# Built data for maps
+*_BuiltData.uasset
 
 .vscode
 .vs
