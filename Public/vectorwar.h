@@ -1,12 +1,7 @@
 #ifndef _VECTORWAR_H
 #define _VECTORWAR_H
 
-// UE4: allow Windows platform types to avoid naming collisions
-//  this must be undone at the bottom of this file
-#include "Windows/AllowWindowsPlatformTypes.h"
-#include "Windows/prewindowsapi.h"
-
-#include <windef.h>
+#include "../Private/gamestate.h"
 #include "include/ggponet.h"
 
 /*
@@ -34,6 +29,8 @@ BOOL VectorWar_DestroyWindow(HWND hwnd);
 #define ARRAY_SIZE(n)      (sizeof(n) / sizeof(n[0]))
 #define FRAME_DELAY        2
 
+GameState gs = { 0 };
+
 class VECTORWAR_API VectorWarHost
 {
 public:
@@ -46,10 +43,5 @@ public:
     static void VectorWar_Idle(int time);
     static void VectorWar_Exit();
 };
-
-// UE4: disallow windows platform types
-//  this was enabled at the top of the file
-#include "Windows/PostWindowsApi.h"
-#include "Windows/HideWindowsPlatformTypes.h"
 
 #endif

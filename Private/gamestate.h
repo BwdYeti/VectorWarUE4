@@ -65,6 +65,7 @@ struct GameState {
    void MoveShip(int i, double heading, double thrust, int fire);
    void Update(int inputs[], int disconnect_flags);
 
+public:
    int         _framenumber;
    RECT        _bounds;
    int         _num_ships;

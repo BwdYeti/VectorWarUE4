@@ -11,7 +11,6 @@
 //#define SYNC_TEST    // test: turn on synctest
 #define MAX_PLAYERS     64
 
-GameState gs = { 0 };
 NonGameState ngs = { 0 };
 Renderer *renderer = NULL;
 GGPOSession *ggpo = NULL;
