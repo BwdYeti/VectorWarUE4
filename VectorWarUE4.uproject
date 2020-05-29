@@ -15,7 +15,10 @@
 		{
 			"Name": "VectorWar",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		},
 		{
 			"Name": "GGPOUE4",
