@@ -22,6 +22,12 @@ FTransform UGameStateInterface::ShipTransform(int32 Index)
 	return Result;
 }
 
+int32 UGameStateInterface::ShipScore(int32 Index)
+{
+	const Ship Ship = gs._ships[Index];
+	return Ship.score;
+}
+
 bool UGameStateInterface::BulletEnabled(int32 Index)
 {
 	const Bullet Bullet = GetBullet(Index);

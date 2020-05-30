@@ -28,6 +28,9 @@ public:
 	static FTransform ShipTransform(int32 Index);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static int32 ShipScore(int32 Index);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static bool BulletEnabled(int32 Index);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
