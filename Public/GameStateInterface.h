@@ -18,25 +18,47 @@ class VECTORWAR_API UGameStateInterface : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	/** Gets the number of ships in the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static int32 ShipCount();
 
+	/** Gets the total number of bullets allocated by active ships. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static int32 BulletCount();
 
+	/**
+	 * Gets the Transform of a player's ship.
+	 * @param Index						Index of the player
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static FTransform ShipTransform(int32 Index);
 
+	/**
+	 * Gets a player's score.
+	 * @param Index						Index of the player
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static int32 ShipScore(int32 Index);
 
+	/**
+	 * Gets whether a bullet is enabled.
+	 * @param Index						Bullet index
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static bool BulletEnabled(int32 Index);
 
+	/**
+	 * Gets the Transform of a bullet.
+	 * @param Index						Bullet index
+	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static FTransform BulletTransform(int32 Index);
 
 private:
 
+	/**
+	 * Gets a Bullet.
+	 * @param Index						Bullet index
+	 */
 	static Bullet GetBullet(int32 Index);
 };
