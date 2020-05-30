@@ -6,6 +6,9 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameStateInterface.generated.h"
 
+// Forward declarations
+struct Bullet;
+
 /**
  * 
  */
@@ -19,5 +22,18 @@ public:
 	static int32 ShipCount();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static int32 BulletCount();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static FTransform ShipTransform(int32 Index);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static bool BulletEnabled(int32 Index);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static FTransform BulletTransform(int32 Index);
+
+private:
+
+	static Bullet GetBullet(int32 Index);
 };
