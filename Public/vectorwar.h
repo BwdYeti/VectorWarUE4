@@ -2,6 +2,7 @@
 #define _VECTORWAR_H
 
 #include "../Private/gamestate.h"
+#include "../Private/nongamestate.h"
 #include "include/ggponet.h"
 
 /*
@@ -30,6 +31,7 @@ BOOL VectorWar_DestroyWindow(HWND hwnd);
 #define FRAME_DELAY        2
 
 GameState gs = { 0 };
+NonGameState ngs = { 0 };
 
 class VECTORWAR_API VectorWarHost
 {
