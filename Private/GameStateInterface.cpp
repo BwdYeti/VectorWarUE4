@@ -49,3 +49,23 @@ Bullet UGameStateInterface::GetBullet(int32 Index)
 	return Ship.bullets[Index % MAX_BULLETS];
 }
 
+int32 UGameStateInterface::FrameNumber()
+{
+	return ngs.now.framenumber;
+}
+
+int32 UGameStateInterface::Checksum()
+{
+	return ngs.now.checksum;
+}
+
+int32 UGameStateInterface::PeriodicFrame()
+{
+	return ngs.periodic.framenumber;
+}
+
+int32 UGameStateInterface::PeriodicChecksum()
+{
+	return ngs.periodic.checksum;
+}
+

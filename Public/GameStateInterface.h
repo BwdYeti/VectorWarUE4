@@ -61,4 +61,21 @@ private:
 	 * @param Index						Bullet index
 	 */
 	static Bullet GetBullet(int32 Index);
+
+public:
+	/** Gets the frame number of the game state. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+	static int32 FrameNumber();
+
+	/** Gets the checksum of the game state. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+	static int32 Checksum();
+
+	/** Gets the frame number of the game state. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+		static int32 PeriodicFrame();
+
+	/** Gets the checksum of the game state. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+		static int32 PeriodicChecksum();
 };
