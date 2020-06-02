@@ -1,6 +1,8 @@
 #pragma once
 
+#include "CoreMinimal.h"
 #include "include/ggponet.h"
+#include "nongamestate.generated.h"
 
 #define MAX_PLAYERS     64
 
@@ -22,13 +24,21 @@ enum class EPlayerConnectState : uint8 {
    Disconnecting    UMETA(DisplayName = "Disconnecting"),
 };
 
-struct PlayerConnectionInfo {
-   EGGPOPlayerType      type;
-   GGPOPlayerHandle     handle;
-   EPlayerConnectState  state;
-   int                  connect_progress;
-   int                  disconnect_timeout;
-   int                  disconnect_start;
+USTRUCT(BlueprintType)
+struct FPlayerConnectionInfo {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    EGGPOPlayerType     type;
+    int32               handle; // xxx: GGPOPlayerHandle
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    EPlayerConnectState state;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32               connect_progress;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32               disconnect_timeout;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32               disconnect_start;
 };
 
 struct NonGameState {
@@ -46,7 +56,7 @@ struct NonGameState {
    void UpdateConnectProgress(GGPOPlayerHandle handle, int progress);
 
    GGPOPlayerHandle     local_player_handle;
-   PlayerConnectionInfo players[MAX_PLAYERS];
+   FPlayerConnectionInfo players[MAX_PLAYERS];
    int                  num_players;
 
    ChecksumInfo         now;

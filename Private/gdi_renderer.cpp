@@ -155,7 +155,7 @@ GDIRenderer::DrawShip(HDC hdc, int which, GameState &gs)
 }
 
 void
-GDIRenderer::DrawConnectState(HDC hdc, Ship &ship, PlayerConnectionInfo &info)
+GDIRenderer::DrawConnectState(HDC hdc, Ship &ship, FPlayerConnectionInfo &info)
 {
    char status[64];
    static const char *statusStrings[] = {
