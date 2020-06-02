@@ -2,7 +2,7 @@
 #define _VECTORWAR_H
 
 #include "../Private/gamestate.h"
-#include "../Private/nongamestate.h"
+#include "nongamestate.h"
 #include "include/ggponet.h"
 
 /*
