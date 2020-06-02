@@ -49,6 +49,11 @@ Bullet UGameStateInterface::GetBullet(int32 Index)
 	return Ship.bullets[Index % MAX_BULLETS];
 }
 
+FPlayerConnectionInfo UGameStateInterface::ConnectionInfo(int32 Index)
+{
+	return ngs.players[Index];
+}
+
 int32 UGameStateInterface::FrameNumber()
 {
 	return ngs.now.framenumber;

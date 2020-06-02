@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "nongamestate.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameStateInterface.generated.h"
 
@@ -63,6 +64,14 @@ private:
 	static Bullet GetBullet(int32 Index);
 
 public:
+	/**
+	 * Gets a player's connection info.
+	 * @param Index						Index of the player
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static FPlayerConnectionInfo ConnectionInfo(int32 Index);
+	//static int32 ConnectionState(int32 Index);
+
 	/** Gets the frame number of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
 	static int32 FrameNumber();
