@@ -13,7 +13,7 @@
  * should not be rolled back.
  */
 
-UENUM()
+UENUM(BlueprintType)
 enum class EPlayerConnectState : uint8 {
    Connecting = 0   UMETA(DisplayName = "Connecting"),
    Synchronizing    UMETA(DisplayName = "Synchronizing"),
