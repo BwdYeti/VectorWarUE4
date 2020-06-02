@@ -1,5 +1,4 @@
-#ifndef _NON_GAMESTATE_H_
-#define _NON_GAMESTATE_H_
+#pragma once
 
 #include "include/ggponet.h"
 
@@ -14,18 +13,19 @@
  * should not be rolled back.
  */
 
-enum PlayerConnectState {
-   Connecting = 0,
-   Synchronizing,
-   Running,
-   Disconnected,
-   Disconnecting,
+UENUM()
+enum class EPlayerConnectState : uint8 {
+   Connecting = 0   UMETA(DisplayName = "Connecting"),
+   Synchronizing    UMETA(DisplayName = "Synchronizing"),
+   Running          UMETA(DisplayName = "Running"),
+   Disconnected     UMETA(DisplayName = "Disconnected"),
+   Disconnecting    UMETA(DisplayName = "Disconnecting"),
 };
 
 struct PlayerConnectionInfo {
-   GGPOPlayerType       type;
+   EGGPOPlayerType      type;
    GGPOPlayerHandle     handle;
-   PlayerConnectState   state;
+   EPlayerConnectState  state;
    int                  connect_progress;
    int                  disconnect_timeout;
    int                  disconnect_start;
@@ -37,11 +37,11 @@ struct NonGameState {
       int checksum;
    };
 
-   void SetConnectState(GGPOPlayerHandle handle, PlayerConnectState state);
+   void SetConnectState(GGPOPlayerHandle handle, EPlayerConnectState state);
 
    void SetDisconnectTimeout(GGPOPlayerHandle handle, int when, int timeout);
 
-   void SetConnectState(PlayerConnectState state);
+   void SetConnectState(EPlayerConnectState state);
 
    void UpdateConnectProgress(GGPOPlayerHandle handle, int progress);
 
@@ -52,5 +52,3 @@ struct NonGameState {
    ChecksumInfo         now;
    ChecksumInfo         periodic;
 };
-
-#endif

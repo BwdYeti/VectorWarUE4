@@ -1,6 +1,6 @@
 #include "nongamestate.h"
 
-void NonGameState::SetConnectState(GGPOPlayerHandle handle, PlayerConnectState state) {
+void NonGameState::SetConnectState(GGPOPlayerHandle handle, EPlayerConnectState state) {
     for (int i = 0; i < num_players; i++) {
         if (players[i].handle == handle) {
             players[i].connect_progress = 0;
@@ -15,13 +15,13 @@ void NonGameState::SetDisconnectTimeout(GGPOPlayerHandle handle, int when, int t
         if (players[i].handle == handle) {
             players[i].disconnect_start = when;
             players[i].disconnect_timeout = timeout;
-            players[i].state = Disconnecting;
+            players[i].state = EPlayerConnectState::Disconnecting;
             break;
         }
     }
 }
 
-void NonGameState::SetConnectState(PlayerConnectState state) {
+void NonGameState::SetConnectState(EPlayerConnectState state) {
     for (int i = 0; i < num_players; i++) {
         players[i].state = state;
     }

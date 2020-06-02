@@ -168,12 +168,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
          players[i].size = sizeof(players[i]);
          players[i].player_num = i + 1;
          if (!_wcsicmp(arg, L"local")) {
-            players[i].type = GGPO_PLAYERTYPE_LOCAL;
+            players[i].type = EGGPOPlayerType::LOCAL;
             local_player = i;
             continue;
          }
          
-         players[i].type = GGPO_PLAYERTYPE_REMOTE;
+         players[i].type = EGGPOPlayerType::REMOTE;
          if (swscanf_s(arg, L"%[^:]:%hd", wide_ip_buffer, wide_ip_buffer_size, &players[i].u.remote.port) != 2) {
             Syntax();
             return 1;
@@ -183,7 +183,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
       // these are spectators...
       int num_spectators = 0;
       while (offset < __argc) {
-         players[i].type = GGPO_PLAYERTYPE_SPECTATOR;
+         players[i].type = EGGPOPlayerType::SPECTATOR;
          if (swscanf_s(__wargv[offset++], L"%[^:]:%hd", wide_ip_buffer, wide_ip_buffer_size, &players[i].u.remote.port) != 2) {
             Syntax();
             return 1;

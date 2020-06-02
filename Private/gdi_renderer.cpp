@@ -168,20 +168,20 @@ GDIRenderer::DrawConnectState(HDC hdc, Ship &ship, PlayerConnectionInfo &info)
 
    *status = '\0';
    switch (info.state) {
-      case Connecting:
-         sprintf_s(status, ARRAYSIZE(status), (info.type == GGPO_PLAYERTYPE_LOCAL) ? "Local Player" : "Connecting...");
+      case EPlayerConnectState::Connecting:
+         sprintf_s(status, ARRAYSIZE(status), (info.type == EGGPOPlayerType::LOCAL) ? "Local Player" : "Connecting...");
          break;
 
-      case Synchronizing:
+      case EPlayerConnectState::Synchronizing:
          progress = info.connect_progress;
-         sprintf_s(status, ARRAYSIZE(status), (info.type == GGPO_PLAYERTYPE_LOCAL) ? "Local Player" : "Synchronizing...");
+         sprintf_s(status, ARRAYSIZE(status), (info.type == EGGPOPlayerType::LOCAL) ? "Local Player" : "Synchronizing...");
          break;
 
-      case Disconnected:
+      case EPlayerConnectState::Disconnected:
          sprintf_s(status, ARRAYSIZE(status), "Disconnected");
          break;
 
-      case Disconnecting:
+      case EPlayerConnectState::Disconnecting:
          sprintf_s(status, ARRAYSIZE(status), "Waiting for player...");
          progress = (timeGetTime() - info.disconnect_start) * 100 / info.disconnect_timeout;
          break;
@@ -192,7 +192,7 @@ GDIRenderer::DrawConnectState(HDC hdc, Ship &ship, PlayerConnectionInfo &info)
       TextOutA(hdc, (int)ship.position.x, (int)ship.position.y + PROGRESS_TEXT_OFFSET, status, (int)strlen(status));
    }
    if (progress >= 0) {
-      HBRUSH bar = (HBRUSH)(info.state == Synchronizing ? GetStockObject(WHITE_BRUSH) : _redBrush);
+      HBRUSH bar = (HBRUSH)(info.state == EPlayerConnectState::Synchronizing ? GetStockObject(WHITE_BRUSH) : _redBrush);
       RECT rc = { (LONG)(ship.position.x - (PROGRESS_BAR_WIDTH / 2)),
                   (LONG)(ship.position.y + PROGRESS_BAR_TOP_OFFSET),
                   (LONG)(ship.position.x + (PROGRESS_BAR_WIDTH / 2)),

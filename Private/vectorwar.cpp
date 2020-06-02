@@ -66,7 +66,7 @@ vw_on_event_callback(GGPOEvent *info)
    int progress;
    switch (info->code) {
    case GGPO_EVENTCODE_CONNECTED_TO_PEER:
-      ngs.SetConnectState(info->u.connected.player, Synchronizing);
+      ngs.SetConnectState(info->u.connected.player, EPlayerConnectState::Synchronizing);
       break;
    case GGPO_EVENTCODE_SYNCHRONIZING_WITH_PEER:
       progress = 100 * info->u.synchronizing.count / info->u.synchronizing.total;
@@ -76,7 +76,7 @@ vw_on_event_callback(GGPOEvent *info)
       ngs.UpdateConnectProgress(info->u.synchronized.player, 100);
       break;
    case GGPO_EVENTCODE_RUNNING:
-      ngs.SetConnectState(Running);
+      ngs.SetConnectState(EPlayerConnectState::Running);
       renderer->SetStatusText("");
       break;
    case GGPO_EVENTCODE_CONNECTION_INTERRUPTED:
@@ -85,10 +85,10 @@ vw_on_event_callback(GGPOEvent *info)
                                info->u.connection_interrupted.disconnect_timeout);
       break;
    case GGPO_EVENTCODE_CONNECTION_RESUMED:
-      ngs.SetConnectState(info->u.connection_resumed.player, Running);
+      ngs.SetConnectState(info->u.connection_resumed.player, EPlayerConnectState::Running);
       break;
    case GGPO_EVENTCODE_DISCONNECTED_FROM_PEER:
-      ngs.SetConnectState(info->u.disconnected.player, Disconnected);
+      ngs.SetConnectState(info->u.disconnected.player, EPlayerConnectState::Disconnected);
       break;
    case GGPO_EVENTCODE_TIMESYNC:
       Sleep(1000 * info->u.timesync.frames_ahead / 60);
@@ -242,10 +242,10 @@ VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_playe
       result = GGPONet::ggpo_add_player(ggpo, players + i, &handle);
       ngs.players[i].handle = handle;
       ngs.players[i].type = players[i].type;
-      if (players[i].type == GGPO_PLAYERTYPE_LOCAL) {
+      if (players[i].type == EGGPOPlayerType::LOCAL) {
          ngs.players[i].connect_progress = 100;
          ngs.local_player_handle = handle;
-         ngs.SetConnectState(handle, Connecting);
+         ngs.SetConnectState(handle, EPlayerConnectState::Connecting);
          GGPONet::ggpo_set_frame_delay(ggpo, handle, FRAME_DELAY);
       } else {
          ngs.players[i].connect_progress = 0;
@@ -351,7 +351,7 @@ void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags)
    GGPOPlayerHandle handles[MAX_PLAYERS];
    int count = 0;
    for (int i = 0; i < ngs.num_players; i++) {
-      if (ngs.players[i].type == GGPO_PLAYERTYPE_REMOTE) {
+      if (ngs.players[i].type == EGGPOPlayerType::REMOTE) {
          handles[count++] = ngs.players[i].handle;
       }
    }
