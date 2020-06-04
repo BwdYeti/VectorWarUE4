@@ -54,6 +54,11 @@ FPlayerConnectionInfo UGameStateInterface::ConnectionInfo(int32 Index)
 	return ngs.players[Index];
 }
 
+float UGameStateInterface::DisconnectTime(int32 Index)
+{
+	return ngs.GetDisconnectTime(Index);
+}
+
 int32 UGameStateInterface::FrameNumber()
 {
 	return ngs.now.framenumber;

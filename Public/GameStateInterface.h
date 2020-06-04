@@ -70,7 +70,13 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
 	static FPlayerConnectionInfo ConnectionInfo(int32 Index);
-	//static int32 ConnectionState(int32 Index);
+
+	/**
+	 * Gets a player's disconnection state.
+	 * @param Index						Index of the player
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
+	static float DisconnectTime(int32 Index);
 
 	/** Gets the frame number of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")

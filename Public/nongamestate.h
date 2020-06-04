@@ -61,4 +61,7 @@ struct NonGameState {
 
    ChecksumInfo         now;
    ChecksumInfo         periodic;
+
+public:
+   float GetDisconnectTime(int32 index);
 };

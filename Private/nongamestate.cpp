@@ -1,5 +1,12 @@
 #include "nongamestate.h"
 
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <timeapi.h>
+
 void NonGameState::SetConnectState(GGPOPlayerHandle handle, EPlayerConnectState state) {
     for (int i = 0; i < num_players; i++) {
         if (players[i].handle == handle) {
@@ -21,6 +28,12 @@ void NonGameState::SetDisconnectTimeout(GGPOPlayerHandle handle, int when, int t
     }
 }
 
+float NonGameState::GetDisconnectTime(int32 index)
+{
+    FPlayerConnectionInfo info = players[index];
+    return ((timeGetTime() - info.disconnect_start) * 1.0f) / info.disconnect_timeout;
+}
+
 void NonGameState::SetConnectState(EPlayerConnectState state) {
     for (int i = 0; i < num_players; i++) {
         players[i].state = state;
@@ -35,3 +48,8 @@ void NonGameState::UpdateConnectProgress(GGPOPlayerHandle handle, int progress) 
         }
     }
 }
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
