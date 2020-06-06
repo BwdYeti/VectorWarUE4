@@ -367,7 +367,7 @@ void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags)
  * transparently.
  */
 int
-ReadInputs(HWND hwnd)
+VectorWarHost::ReadInputs(HWND hwnd)
 {
    static const struct {
       int      key;
@@ -399,18 +399,17 @@ ReadInputs(HWND hwnd)
  * Run a single frame of the game.
  */
 void
-VectorWarHost::VectorWar_RunFrame(HWND hwnd)
+VectorWarHost::VectorWar_RunFrame(HWND hwnd, int local_input)
 {
   GGPOErrorCode result = GGPO_OK;
   int disconnect_flags;
   int inputs[MAX_SHIPS] = { 0 };
 
   if (ngs.local_player_handle != GGPO_INVALID_HANDLE) {
-     int input = ReadInputs(hwnd);
 #if defined(SYNC_TEST)
-     input = rand(); // test: use random inputs to demonstrate sync testing
+     local_input = rand(); // test: use random inputs to demonstrate sync testing
 #endif
-     result = GGPONet::ggpo_add_local_input(ggpo, ngs.local_player_handle, &input, sizeof(input));
+     result = GGPONet::ggpo_add_local_input(ggpo, ngs.local_player_handle, &local_input, sizeof(local_input));
   }
 
    // synchronize these inputs with ggpo.  If we have enough input to proceed

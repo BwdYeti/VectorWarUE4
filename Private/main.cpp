@@ -97,7 +97,8 @@ VectorWarHost::RunMainLoop(HWND hwnd)
       now = timeGetTime();
       VectorWarHost::VectorWar_Idle(max(0, next - now - 1));
       if (now >= next) {
-         VectorWarHost::VectorWar_RunFrame(hwnd);
+          int input = VectorWarHost::ReadInputs(hwnd);
+         VectorWarHost::VectorWar_RunFrame(hwnd, input);
          next = now + (1000 / 60);
       }
    }
