@@ -12,8 +12,14 @@ void AVWGameStateBase::BeginPlay()
     Super::BeginPlay();
 
     Hwnd = StartSinglePlayerGGPOSession();
+    // xxx: Hwnd = StartGGPOPlayerSession(7000, 4,
+    //    { L"local", L"127.0.0.1:7001", L"127.0.0.1:7002", L"127.0.0.1:7003" });
 
-    if (!Hwnd)
+    if (Hwnd)
+    {
+        OnSessionStarted();
+    }
+    else
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to create GGPO session"));
     }
@@ -84,11 +90,11 @@ HWND AVWGameStateBase::StartGGPOPlayerSession(
         Players[i].size = sizeof(Players[i]);
         Players[i].player_num = i + 1;
         if (!_wcsicmp(Arg, L"local")) {
-            Players[i].type = GGPO_PLAYERTYPE_LOCAL;
+            Players[i].type = EGGPOPlayerType::LOCAL;
             continue;
         }
 
-        Players[i].type = GGPO_PLAYERTYPE_REMOTE;
+        Players[i].type = EGGPOPlayerType::REMOTE;
         if (swscanf_s(Arg, L"%[^:]:%hd", WideIpBuffer, WideIpBufferSize, &Players[i].u.remote.port) != 2) {
             return 0;
         }
@@ -97,7 +103,7 @@ HWND AVWGameStateBase::StartGGPOPlayerSession(
     // these are spectators...
     int32 NumSpectators = 0;
     while (Offset < PlayerParameters.Num()) {
-        Players[i].type = GGPO_PLAYERTYPE_SPECTATOR;
+        Players[i].type = EGGPOPlayerType::SPECTATOR;
         if (swscanf_s(PlayerParameters[Offset++], L"%[^:]:%hd", WideIpBuffer, WideIpBufferSize, &Players[i].u.remote.port) != 2) {
             return 0;
         }
@@ -113,3 +119,5 @@ HWND AVWGameStateBase::StartGGPOPlayerSession(
 
     return hwnd;
 }
+
+void AVWGameStateBase::OnSessionStarted_Implementation() { }
