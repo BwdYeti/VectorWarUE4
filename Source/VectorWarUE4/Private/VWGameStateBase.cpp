@@ -41,7 +41,8 @@ void AVWGameStateBase::Tick(float DeltaSeconds)
     int32 IdleMs = (int32)(ONE_FRAME - (int32)(ElapsedTime * 1000));
     VectorWarHost::VectorWar_Idle(FMath::Max(0, IdleMs - 1));
     while (ElapsedTime >= ONE_FRAME) {
-        VectorWarHost::VectorWar_RunFrame(Hwnd);
+        int Input = VectorWarHost::ReadInputs(Hwnd);
+        VectorWarHost::VectorWar_RunFrame(Hwnd, Input);
         ElapsedTime -= ONE_FRAME;
     }
 }
