@@ -1,7 +1,9 @@
 // Copyright 2020 BwdYeti.
 
 #include "VWGameStateBase.h"
+#include "VectorWarPlayerController.h"
 #include "include/ggponet.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 #define ARRAYSIZE(a) sizeof(a) / sizeof(a[0])
 #define FRAME_RATE 60
@@ -21,7 +23,7 @@ void AVWGameStateBase::BeginPlay()
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to create GGPO session"));
+        UE_LOG(LogTemp, Error, TEXT("Failed to create GGPO session"));
     }
 }
 
@@ -41,7 +43,8 @@ void AVWGameStateBase::Tick(float DeltaSeconds)
     int32 IdleMs = (int32)(ONE_FRAME - (int32)(ElapsedTime * 1000));
     VectorWarHost::VectorWar_Idle(FMath::Max(0, IdleMs - 1));
     while (ElapsedTime >= ONE_FRAME) {
-        VectorWarHost::VectorWar_RunFrame(Hwnd);
+        int32 Input = GetLocalInputs();
+        VectorWarHost::VectorWar_RunFrame(Hwnd, Input);
         ElapsedTime -= ONE_FRAME;
     }
 }
@@ -58,6 +61,8 @@ void AVWGameStateBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
         Hwnd = 0;
     }
 }
+
+void AVWGameStateBase::OnSessionStarted_Implementation() { }
 
 HWND AVWGameStateBase::StartSinglePlayerGGPOSession()
 {
@@ -120,4 +125,12 @@ HWND AVWGameStateBase::StartGGPOPlayerSession(
     return hwnd;
 }
 
-void AVWGameStateBase::OnSessionStarted_Implementation() { }
+int32 AVWGameStateBase::GetLocalInputs()
+{
+    AVectorWarPlayerController* Controller = Cast<AVectorWarPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    if (Controller)
+    {
+        return Controller->GetVectorWarInput();
+    }
+    return 0;
+}
