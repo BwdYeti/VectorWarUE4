@@ -13,5 +13,9 @@ UCLASS()
 class AVectorWarPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	/** Get the player inputs as bit flags in an int32 that VectorWar can understand */
+	int32 GetVectorWarInput();
 	
 };
