@@ -5,8 +5,13 @@
 #include <math.h>
 #include <stdio.h>
 #include "gamestate.h"
-#include "gdi_renderer.h"
-#include "ggpo_perfmon.h"
+
+// UE4: allow Windows platform types to avoid naming collisions
+//  this must be undone at the bottom of this file
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/prewindowsapi.h"
+
+#include <timeapi.h>
 
 //#define SYNC_TEST    // test: turn on synctest
 #define MAX_PLAYERS     64
@@ -391,3 +396,9 @@ VectorWarHost::VectorWar_Exit()
       ggpo = NULL;
    }
 }
+
+// UE4: disallow windows platform types
+//  this was enabled at the top of the file
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
+
