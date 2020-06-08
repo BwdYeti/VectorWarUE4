@@ -41,7 +41,7 @@ public:
 
     static void VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer* players, int num_spectators);
     static void RunMainLoop(HWND hwnd);
-    static void VectorWar_RunFrame(HWND hwnd, int local_input);
+    static void VectorWar_RunFrame(int local_input);
     static void VectorWar_Idle(int time);
     static void VectorWar_Exit();
 

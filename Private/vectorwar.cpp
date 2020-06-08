@@ -252,7 +252,7 @@ VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_playe
       }
    }
 
-   ggpoutil_perfmon_init(hwnd);
+   //ggpoutil_perfmon_init(hwnd);
    renderer->SetStatusText("Connecting to peers.");
 
    GGPONet::ggpo_try_synchronize_local(ggpo);
@@ -285,7 +285,7 @@ VectorWar_InitSpectator(HWND hwnd, unsigned short localport, int num_players, ch
 
    result = GGPONet::ggpo_start_spectating(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport, host_ip, host_port);
 
-   ggpoutil_perfmon_init(hwnd);
+   //ggpoutil_perfmon_init(hwnd);
 
    renderer->SetStatusText("Starting new spectator session");
 }
@@ -355,7 +355,7 @@ void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags)
          handles[count++] = ngs.players[i].handle;
       }
    }
-   ggpoutil_perfmon_update(ggpo, handles, count);
+   //ggpoutil_perfmon_update(ggpo, handles, count);
 }
 
 
@@ -399,7 +399,7 @@ VectorWarHost::ReadInputs(HWND hwnd)
  * Run a single frame of the game.
  */
 void
-VectorWarHost::VectorWar_RunFrame(HWND hwnd, int local_input)
+VectorWarHost::VectorWar_RunFrame(int local_input)
 {
   GGPOErrorCode result = GGPO_OK;
   int disconnect_flags;
