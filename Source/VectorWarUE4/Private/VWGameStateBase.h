@@ -32,13 +32,13 @@ public:
 
 private:
 	/** Starts a single player GGPO game session. */
-	HWND StartSinglePlayerGGPOSession();
+	bool TryStartSinglePlayerGGPOSession();
 	/** Starts a GGPO game session. */
-	HWND StartGGPOPlayerSession(const uint16 LocalPort, const int32 NumPlayers, TArray<wchar_t*> PlayerParameters);
+	bool TryStartGGPOPlayerSession(const uint16 LocalPort, const int32 NumPlayers, TArray<wchar_t*> PlayerParameters);
 	/** Gets the inputs from the local player. */
 	int32 GetLocalInputs();
 
-	HWND Hwnd;
+	bool bSessionStarted;
 
 	float ElapsedTime;
 
