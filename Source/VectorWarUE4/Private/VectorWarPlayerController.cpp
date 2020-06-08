@@ -2,7 +2,7 @@
 
 
 #include "VectorWarPlayerController.h"
-#include "vectorwar.h"
+#include "VectorWar/vectorwar.h"
 
 int32 AVectorWarPlayerController::GetVectorWarInput()
 {

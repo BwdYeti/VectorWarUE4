@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "nongamestate.h"
+#include "VectorWar/nongamestate.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameStateInterface.generated.h"
 
@@ -14,7 +14,7 @@ struct Bullet;
  * 
  */
 UCLASS()
-class VECTORWAR_API UGameStateInterface : public UBlueprintFunctionLibrary
+class VECTORWARUE4_API UGameStateInterface : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

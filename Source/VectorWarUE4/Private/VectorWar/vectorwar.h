@@ -1,7 +1,7 @@
 #ifndef _VECTORWAR_H
 #define _VECTORWAR_H
 
-#include "../Private/gamestate.h"
+#include "gamestate.h"
 #include "nongamestate.h"
 #include "include/ggponet.h"
 
@@ -31,7 +31,7 @@ void VectorWar_DisconnectPlayer(int player);
 GameState gs = { 0 };
 NonGameState ngs = { 0 };
 
-class VECTORWAR_API VectorWarHost
+class VECTORWARUE4_API VectorWarHost
 {
 public:
     static void VectorWar_Init(unsigned short localport, int num_players, GGPOPlayer* players, int num_spectators);
