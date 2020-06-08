@@ -11,7 +11,6 @@
 //#define SYNC_TEST    // test: turn on synctest
 #define MAX_PLAYERS     64
 
-Renderer *renderer = NULL;
 GGPOSession *ggpo = NULL;
 
 /* 
@@ -77,7 +76,6 @@ vw_on_event_callback(GGPOEvent *info)
       break;
    case GGPO_EVENTCODE_RUNNING:
       ngs.SetConnectState(EPlayerConnectState::Running);
-      renderer->SetStatusText("");
       break;
    case GGPO_EVENTCODE_CONNECTION_INTERRUPTED:
       ngs.SetDisconnectTimeout(info->u.connection_interrupted.player,
@@ -202,13 +200,12 @@ vw_free_buffer(void *buffer)
  * VectorWar_Init --
  *
  * Initialize the vector war game.  This initializes the game state and
- * the video renderer and creates a new network session.
+ * creates a new network session.
  */
 void
-VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer *players, int num_spectators)
+VectorWarHost::VectorWar_Init(unsigned short localport, int num_players, GGPOPlayer *players, int num_spectators)
 {
    GGPOErrorCode result;
-   renderer = new GDIRenderer(hwnd);
 
    // Initialize the game state
    gs.Init(num_players);
@@ -253,7 +250,6 @@ VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_playe
    }
 
    //ggpoutil_perfmon_init(hwnd);
-   renderer->SetStatusText("Connecting to peers.");
 
    GGPONet::ggpo_try_synchronize_local(ggpo);
 }
@@ -264,10 +260,9 @@ VectorWarHost::VectorWar_Init(HWND hwnd, unsigned short localport, int num_playe
  * Create a new spectator session
  */
 void
-VectorWar_InitSpectator(HWND hwnd, unsigned short localport, int num_players, char *host_ip, unsigned short host_port)
+VectorWar_InitSpectator(unsigned short localport, int num_players, char *host_ip, unsigned short host_port)
 {
    GGPOErrorCode result;
-   renderer = new GDIRenderer(hwnd);
 
    // Initialize the game state
    gs.Init(num_players);
@@ -286,8 +281,6 @@ VectorWar_InitSpectator(HWND hwnd, unsigned short localport, int num_players, ch
    result = GGPONet::ggpo_start_spectating(&ggpo, &cb, "vectorwar", num_players, sizeof(int), localport, host_ip, host_port);
 
    //ggpoutil_perfmon_init(hwnd);
-
-   renderer->SetStatusText("Starting new spectator session");
 }
 
 
@@ -308,21 +301,6 @@ VectorWar_DisconnectPlayer(int player)
       } else {
          sprintf_s(logbuf, ARRAYSIZE(logbuf), "Error while disconnecting player (err:%d).\n", result);
       }
-      renderer->SetStatusText(logbuf);
-   }
-}
-
-
-/*
- * VectorWar_DrawCurrentFrame --
- *
- * Draws the current frame without modifying the game state.
- */
-void
-VectorWar_DrawCurrentFrame()
-{
-   if (renderer != nullptr) {
-      renderer->Draw(gs, ngs);
    }
 }
 
@@ -358,41 +336,6 @@ void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags)
    //ggpoutil_perfmon_update(ggpo, handles, count);
 }
 
-
-/*
- * ReadInputs --
- *
- * Read the inputs for player 1 from the keyboard.  We never have to
- * worry about player 2.  GGPO will handle remapping his inputs 
- * transparently.
- */
-int
-VectorWarHost::ReadInputs(HWND hwnd)
-{
-   static const struct {
-      int      key;
-      int      input;
-   } inputtable[] = {
-      { VK_UP,       INPUT_THRUST },
-      { VK_DOWN,     INPUT_BREAK },
-      { VK_LEFT,     INPUT_ROTATE_LEFT },
-      { VK_RIGHT,    INPUT_ROTATE_RIGHT },
-      { 'D',         INPUT_FIRE },
-      { 'S',         INPUT_BOMB },
-   };
-   int i, inputs = 0;
-
-   if (GetForegroundWindow() == hwnd) {
-      for (i = 0; i < sizeof(inputtable) / sizeof(inputtable[0]); i++) {
-         if (GetAsyncKeyState(inputtable[i].key)) {
-            inputs |= inputtable[i].input;
-         }
-      }
-   }
-   
-   return inputs;
-}
-
 /*
  * VectorWar_RunFrame --
  *
@@ -423,7 +366,6 @@ VectorWarHost::VectorWar_RunFrame(int local_input)
          VectorWar_AdvanceFrame(inputs, disconnect_flags);
      }
   }
-  VectorWar_DrawCurrentFrame();
 }
 
 /*
@@ -448,6 +390,4 @@ VectorWarHost::VectorWar_Exit()
        GGPONet::ggpo_close_session(ggpo);
       ggpo = NULL;
    }
-   delete renderer;
-   renderer = NULL;
 }

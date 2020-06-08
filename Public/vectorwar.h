@@ -21,8 +21,7 @@ enum VectorWarInputs {
    INPUT_BOMB              = (1 << 5),
 };
 
-void VectorWar_InitSpectator(HWND hwnd, unsigned short localport, int num_players, char *host_ip, unsigned short host_port);
-void VectorWar_DrawCurrentFrame();
+void VectorWar_InitSpectator(unsigned short localport, int num_players, char *host_ip, unsigned short host_port);
 void VectorWar_AdvanceFrame(int inputs[], int disconnect_flags);
 void VectorWar_DisconnectPlayer(int player);
 BOOL VectorWar_DestroyWindow(HWND hwnd);
@@ -39,13 +38,10 @@ public:
     static HWND CreateMainWindow(HINSTANCE hInstance);
     static BOOL DestroyWindow(HWND hwnd);
 
-    static void VectorWar_Init(HWND hwnd, unsigned short localport, int num_players, GGPOPlayer* players, int num_spectators);
-    static void RunMainLoop(HWND hwnd);
+    static void VectorWar_Init(unsigned short localport, int num_players, GGPOPlayer* players, int num_spectators);
     static void VectorWar_RunFrame(int local_input);
     static void VectorWar_Idle(int time);
     static void VectorWar_Exit();
-
-    static int ReadInputs(HWND hwnd);
 };
 
 #endif
