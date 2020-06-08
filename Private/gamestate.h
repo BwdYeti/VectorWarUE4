@@ -29,6 +29,8 @@
 #define MAX_BULLETS             30
 #define BULLET_COOLDOWN         8
 #define BULLET_DAMAGE           10
+#define GAME_WIDTH              640
+#define GAME_HEIGHT             480
 
 #define MAX_SHIPS               4
 
@@ -59,7 +61,7 @@ struct Ship {
 };
 
 struct GameState {
-   void Init(HWND hwnd, int num_players);
+   void Init(int num_players);
    void GetShipAI(int i, double *heading, double *thrust, int *fire);
    void ParseShipInputs(int inputs, int i, double *heading, double *thrust, int *fire);
    void MoveShip(int i, double heading, double thrust, int fire);

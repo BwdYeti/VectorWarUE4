@@ -33,11 +33,11 @@ distance(Position *lhs, Position *rhs)
  */
 
 void
-GameState::Init(HWND hwnd, int num_players)
+GameState::Init(int num_players)
 {
    int i, w, h, r;
 
-   GetClientRect(hwnd, &_bounds);
+   _bounds = { (LONG)0, (LONG)0, (LONG)GAME_WIDTH, (LONG)GAME_HEIGHT };
    InflateRect(&_bounds, -8, -8);
 
    w = _bounds.right - _bounds.left;
