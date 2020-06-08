@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "vectorwar.h"
+#include "VectorWar/vectorwar.h"
 #include "GameFramework/GameStateBase.h"
 #include "VWGameStateBase.generated.h"
 

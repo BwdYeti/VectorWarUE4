@@ -9,6 +9,6 @@ public class VectorWarUE4Target : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "VectorWarUE4", "VectorWar", "GGPOUE4" } );
+		ExtraModuleNames.AddRange( new string[] { "VectorWarUE4", "GGPOUE4" } );
 	}
 }
