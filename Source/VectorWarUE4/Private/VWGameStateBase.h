@@ -35,6 +35,8 @@ private:
 	bool TryStartSinglePlayerGGPOSession();
 	/** Starts a GGPO game session. */
 	bool TryStartGGPOPlayerSession(const uint16 LocalPort, const int32 NumPlayers, TArray<wchar_t*> PlayerParameters);
+	/** Starts a GGPO spectating game session. */
+	bool TryStartGGPOSpectatorSession(const uint16 LocalPort, const int32 NumPlayers, wchar_t* HostParameter);
 	/** Gets the inputs from the local player. */
 	int32 GetLocalInputs();
 

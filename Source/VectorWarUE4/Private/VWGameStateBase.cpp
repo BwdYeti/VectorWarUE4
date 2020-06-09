@@ -123,6 +123,29 @@ bool AVWGameStateBase::TryStartGGPOPlayerSession(
     return true;
 }
 
+bool AVWGameStateBase::TryStartGGPOSpectatorSession(
+    const uint16 LocalPort,
+    const int32 NumPlayers,
+    wchar_t* HostParameter)
+{
+    int32 Offset = 0;
+    wchar_t WideIpBuffer[128];
+    uint32 WideIpBufferSize = (uint32)ARRAYSIZE(WideIpBuffer);
+
+    char HostIp[128];
+    uint16 HostPort;
+    if (swscanf_s(HostParameter, L"%[^:]:%hu", WideIpBuffer, WideIpBufferSize, &HostPort) != 2) {
+        return 1;
+    }
+    wcstombs_s(nullptr, HostIp, ARRAYSIZE(HostIp), WideIpBuffer, _TRUNCATE);
+
+    VectorWarHost::VectorWar_InitSpectator(LocalPort, NumPlayers, HostIp, HostPort);
+
+    UE_LOG(LogTemp, Display, TEXT("GGPO spectator session started"));
+
+    return true;
+}
+
 int32 AVWGameStateBase::GetLocalInputs()
 {
     AVectorWarPlayerController* Controller = Cast<AVectorWarPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

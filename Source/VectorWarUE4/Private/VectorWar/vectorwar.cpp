@@ -265,7 +265,7 @@ VectorWarHost::VectorWar_Init(unsigned short localport, int num_players, GGPOPla
  * Create a new spectator session
  */
 void
-VectorWar_InitSpectator(unsigned short localport, int num_players, char *host_ip, unsigned short host_port)
+VectorWarHost::VectorWar_InitSpectator(unsigned short localport, int num_players, char *host_ip, unsigned short host_port)
 {
    GGPOErrorCode result;
 
