@@ -63,6 +63,11 @@ void AVWGameStateBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVWGameStateBase::OnSessionStarted_Implementation() { }
 
+int32 AVWGameStateBase::GetFrameRate()
+{
+    return FRAME_RATE;
+}
+
 bool AVWGameStateBase::TryStartSinglePlayerGGPOSession()
 {
     // Get port

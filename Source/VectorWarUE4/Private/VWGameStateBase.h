@@ -30,6 +30,10 @@ public:
 	void OnSessionStarted();
 	virtual void OnSessionStarted_Implementation();
 
+	/** Get the game state frame rate */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
+	static int32 GetFrameRate();
+
 private:
 	/** Starts a single player GGPO game session. */
 	bool TryStartSinglePlayerGGPOSession();

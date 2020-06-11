@@ -79,3 +79,8 @@ int32 UGameStateInterface::PeriodicChecksum()
 	return ngs.periodic.checksum;
 }
 
+TArray<FGGPONetworkStats> UGameStateInterface::NetworkStats()
+{
+	return VectorWarHost::VectorWar_GetNetworkStats();
+}
+

@@ -397,6 +397,28 @@ VectorWarHost::VectorWar_Exit()
    }
 }
 
+TArray<FGGPONetworkStats>
+VectorWarHost::VectorWar_GetNetworkStats()
+{
+    GGPOPlayerHandle RemoteHandles[MAX_PLAYERS];
+    int Count = 0;
+    for (int i = 0; i < ngs.num_players; i++) {
+        if (ngs.players[i].type == EGGPOPlayerType::REMOTE) {
+            RemoteHandles[Count++] = ngs.players[i].handle;
+        }
+    }
+
+    TArray<FGGPONetworkStats> Result;
+    for (int i = 0; i < Count; i++)
+    {
+        FGGPONetworkStats Stats = { 0 };
+        GGPONet::ggpo_get_network_stats(ggpo, RemoteHandles[i], &Stats);
+        Result.Add(Stats);
+    }
+
+    return Result;
+}
+
 // UE4: disallow windows platform types
 //  this was enabled at the top of the file
 #include "Windows/PostWindowsApi.h"
