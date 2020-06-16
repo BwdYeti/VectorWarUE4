@@ -7,6 +7,34 @@
 #include "GameFramework/GameStateBase.h"
 #include "VWGameStateBase.generated.h"
 
+UENUM(BlueprintType)
+enum class ENetworkGraphType : uint8
+{
+	PING           UMETA(DisplayName = "Ping"),
+	SYNC           UMETA(DisplayName = "Fairness"),
+	REMOTE_SYNC    UMETA(DisplayName = "Remote Fairness"),
+};
+
+USTRUCT(BlueprintType)
+struct FNetworkGraphData {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   Fairness;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   RemoteFairness;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   Ping;
+};
+
+USTRUCT(BlueprintType)
+struct FNetworkGraphPlayer {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FNetworkGraphData> PlayerData;
+};
+
 /**
  *
  */
