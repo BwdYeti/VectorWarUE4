@@ -77,6 +77,54 @@ int32 AVWGameStateBase::GetFrameRate()
     return FRAME_RATE;
 }
 
+TArray<FVector2D> AVWGameStateBase::GetNetworkGraphData(int32 Index, ENetworkGraphType Type, FVector2D GraphSize, int32 MinY, int32 MaxY) const
+{
+    TArray<FVector2D> Result = TArray<FVector2D>();
+
+    // Return an empty array if there's no entry for this index
+    if (Index >= NetworkGraphData.Num())
+        return Result;
+
+    TArray<FNetworkGraphData> PlayerData = NetworkGraphData[Index].PlayerData;
+    for (int32 i = 0; i < PlayerData.Num(); i++)
+    {
+        int32 IntValue = 0;
+        switch (Type)
+        {
+        case ENetworkGraphType::PING:
+            IntValue = PlayerData[i].Ping;
+            break;
+        case ENetworkGraphType::SYNC:
+            IntValue = PlayerData[i].Fairness;
+            break;
+        case ENetworkGraphType::REMOTE_SYNC:
+            IntValue = PlayerData[i].RemoteFairness;
+            break;
+        }
+
+        float Value = GraphValue(IntValue, GraphSize, MinY, MaxY);
+        float X = (i * (GraphSize.X - 1)) / NETWORK_GRAPH_STEPS;
+        Result.Add(FVector2D(X, Value));
+    }
+
+    return Result;
+}
+
+float AVWGameStateBase::GraphValue(int32 Value, FVector2D GraphSize, int32 MinY, int32 MaxY)
+{
+    float Result = 0.f;
+
+    int32 DiffY = MaxY - MinY;
+    if (DiffY > 0)
+    {
+        int32 IntValue = FMath::Clamp(Value - MinY, 0, DiffY);
+        Result = IntValue / (float)DiffY;
+        Result = (1.f - Result) * (GraphSize.Y - 1);
+    }
+
+    return Result;
+}
+
 void AVWGameStateBase::RunFrame()
 {
     int32 Input = GetLocalInputs();

@@ -64,6 +64,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
 	static int32 GetFrameRate();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+	TArray<FVector2D> GetNetworkGraphData(int32 Index, ENetworkGraphType Type, FVector2D GraphSize, int32 MinY, int32 MaxY) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Graph")
+	static float GraphValue(int32 Value, FVector2D GraphSize, int32 MinY, int32 MaxY);
+
 private:
 	void RunFrame();
 
