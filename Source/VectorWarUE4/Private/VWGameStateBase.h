@@ -7,6 +7,36 @@
 #include "GameFramework/GameStateBase.h"
 #include "VWGameStateBase.generated.h"
 
+#define NETWORK_GRAPH_STEPS 720
+
+UENUM(BlueprintType)
+enum class ENetworkGraphType : uint8
+{
+	PING           UMETA(DisplayName = "Ping"),
+	SYNC           UMETA(DisplayName = "Fairness"),
+	REMOTE_SYNC    UMETA(DisplayName = "Remote Fairness"),
+};
+
+USTRUCT(BlueprintType)
+struct FNetworkGraphData {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   Fairness;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   RemoteFairness;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    int32   Ping;
+};
+
+USTRUCT(BlueprintType)
+struct FNetworkGraphPlayer {
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FNetworkGraphData> PlayerData;
+};
+
 /**
  *
  */
@@ -30,7 +60,19 @@ public:
 	void OnSessionStarted();
 	virtual void OnSessionStarted_Implementation();
 
+	/** Get the game state frame rate */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
+	static int32 GetFrameRate();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+	TArray<FVector2D> GetNetworkGraphData(int32 Index, ENetworkGraphType Type, FVector2D GraphSize, int32 MinY, int32 MaxY) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Graph")
+	static float GraphValue(int32 Value, FVector2D GraphSize, int32 MinY, int32 MaxY);
+
 private:
+	void RunFrame();
+
 	/** Starts a single player GGPO game session. */
 	bool TryStartSinglePlayerGGPOSession();
 	/** Starts a GGPO game session. */
@@ -43,5 +85,7 @@ private:
 	bool bSessionStarted;
 
 	float ElapsedTime;
+
+	TArray<FNetworkGraphPlayer> NetworkGraphData;
 
 };

@@ -88,9 +88,13 @@ public:
 
 	/** Gets the frame number of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-		static int32 PeriodicFrame();
+	static int32 PeriodicFrame();
 
 	/** Gets the checksum of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-		static int32 PeriodicChecksum();
+	static int32 PeriodicChecksum();
+
+	/** Gets stats about the network connection. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
+	static TArray<FGGPONetworkStats> NetworkStats();
 };

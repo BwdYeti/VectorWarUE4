@@ -38,6 +38,8 @@ public:
     static void VectorWar_RunFrame(int local_input);
     static void VectorWar_Idle(int time);
     static void VectorWar_Exit();
+
+    static TArray<FGGPONetworkStats> VectorWar_GetNetworkStats();
 };
 
 #endif
