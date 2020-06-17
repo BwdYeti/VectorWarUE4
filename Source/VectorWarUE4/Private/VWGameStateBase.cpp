@@ -7,7 +7,8 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 #define ARRAYSIZE(a) sizeof(a) / sizeof(a[0])
-#define FRAME_RATE 60
+// Because of how it's coded, the original VectorWar runs at 62 fps, not 60
+#define FRAME_RATE 62
 #define ONE_FRAME (1.0f / FRAME_RATE)
 
 void AVWGameStateBase::BeginPlay()
