@@ -2,6 +2,7 @@
 
 #include "VWGameStateBase.h"
 #include "VectorWarPlayerController.h"
+#include "VectorWar/GameStateInterface.h"
 #include "include/ggponet.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
@@ -20,6 +21,14 @@ void AVWGameStateBase::BeginPlay()
     if (bSessionStarted)
     {
         OnSessionStarted();
+
+        NetworkGraphData.Empty();
+        TArray<FGGPONetworkStats> Network = UGameStateInterface::NetworkStats();
+        int32 Count = Network.Num();
+        for (int32 i = 0; i < Count; i++)
+        {
+            NetworkGraphData.Add(FNetworkGraphPlayer{ });
+        }
     }
     else
     {
@@ -43,8 +52,8 @@ void AVWGameStateBase::Tick(float DeltaSeconds)
     int32 IdleMs = (int32)(ONE_FRAME - (int32)(ElapsedTime * 1000));
     VectorWarHost::VectorWar_Idle(FMath::Max(0, IdleMs - 1));
     while (ElapsedTime >= ONE_FRAME) {
-        int32 Input = GetLocalInputs();
-        VectorWarHost::VectorWar_RunFrame(Input);
+        RunFrame();
+
         ElapsedTime -= ONE_FRAME;
     }
 }
@@ -66,6 +75,51 @@ void AVWGameStateBase::OnSessionStarted_Implementation() { }
 int32 AVWGameStateBase::GetFrameRate()
 {
     return FRAME_RATE;
+}
+
+void AVWGameStateBase::RunFrame()
+{
+    int32 Input = GetLocalInputs();
+    VectorWarHost::VectorWar_RunFrame(Input);
+
+    // Network data
+    TArray<FGGPONetworkStats> Network = UGameStateInterface::NetworkStats();
+    for (int32 i = 0; i < NetworkGraphData.Num(); i++)
+    {
+        TArray<FNetworkGraphData>* PlayerData = &NetworkGraphData[i].PlayerData;
+
+        int32 Fairness;
+        int32 LocalFairness = Network[i].timesync.local_frames_behind;
+        int32 RemoteFairness = Network[i].timesync.remote_frames_behind;
+        int32 Ping = Network[i].network.ping;
+
+        if (LocalFairness < 0 && RemoteFairness < 0) {
+            /*
+             * Both think it's unfair (which, ironically, is fair).  Scale both and subtrace.
+             */
+            Fairness = abs(abs(LocalFairness) - abs(RemoteFairness));
+        }
+        else if (LocalFairness > 0 && RemoteFairness > 0) {
+            /*
+             * Impossible!  Unless the network has negative transmit time.  Odd....
+             */
+            Fairness = 0;
+        }
+        else {
+            /*
+             * They disagree.  Add.
+             */
+            Fairness = abs(LocalFairness) + abs(RemoteFairness);
+        }
+
+        FNetworkGraphData GraphData = FNetworkGraphData{ Fairness, RemoteFairness, Ping };
+        PlayerData->Add(GraphData);
+
+        while (PlayerData->Num() > NETWORK_GRAPH_STEPS)
+        {
+            PlayerData->RemoveAt(0);
+        }
+    }
 }
 
 bool AVWGameStateBase::TryStartSinglePlayerGGPOSession()

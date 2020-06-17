@@ -7,6 +7,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "VWGameStateBase.generated.h"
 
+#define NETWORK_GRAPH_STEPS 720
+
 UENUM(BlueprintType)
 enum class ENetworkGraphType : uint8
 {
@@ -63,6 +65,8 @@ public:
 	static int32 GetFrameRate();
 
 private:
+	void RunFrame();
+
 	/** Starts a single player GGPO game session. */
 	bool TryStartSinglePlayerGGPOSession();
 	/** Starts a GGPO game session. */
@@ -75,5 +79,7 @@ private:
 	bool bSessionStarted;
 
 	float ElapsedTime;
+
+	TArray<FNetworkGraphPlayer> NetworkGraphData;
 
 };
