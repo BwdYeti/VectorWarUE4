@@ -1,3 +1,3 @@
-[submodule "Source/GGPOUE4"]
-	path = Source/GGPOUE4
-	url = Source/GGPOUE4
+[submodule "Plugins/GGPOUE4"]
+	path = Plugins/GGPOUE4
+	url = Plugins/GGPOUE4
