@@ -1,3 +1,3 @@
-# VectorWarUE4
+### VectorWar UE4
 
-Developed with Unreal Engine 4
+A port of the GGPO sample game "VectorWar" for Unreal Engine 4.
