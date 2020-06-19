@@ -13,11 +13,11 @@ A port of the GGPO sample game "VectorWar" for Unreal Engine 4, using [GGPOUE4](
 
 ## Controls
 
-Arrow keys: Move
-D: Fire
-P: Network Performance Monitor
+* Arrow keys: Move
+* D: Fire
+* P: Network Performance Monitor
 
-### Notes
+## Notes
 
 Unreal Engine is not deterministic, which is required for netcode that only sends inputs between players, such as deterministic lockstep (delay based) or rollback. VectorWarUE4 gets around this by running the original VectorWar code as its own game state, separate from the UE game logic. It only uses UE for reading player inputs, maintaining the update tick frequency, and rendering the game state by matching Unreal actors to the game state objects they represent. Similar solutions will be required for your own projects.
 
