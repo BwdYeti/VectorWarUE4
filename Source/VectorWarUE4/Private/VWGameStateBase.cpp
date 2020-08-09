@@ -256,7 +256,8 @@ bool AVWGameStateBase::TryStartGGPOSpectatorSession(
 
 int32 AVWGameStateBase::GetLocalInputs()
 {
-    AVectorWarPlayerController* Controller = Cast<AVectorWarPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+    const UObject* world = (UObject*)GetWorld();
+    AVectorWarPlayerController* Controller = Cast<AVectorWarPlayerController>(UGameplayStatics::GetPlayerController(world, 0));
     if (Controller)
     {
         return Controller->GetVectorWarInput();
