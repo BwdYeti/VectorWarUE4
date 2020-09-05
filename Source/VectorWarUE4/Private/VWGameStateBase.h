@@ -7,6 +7,9 @@
 #include "GameFramework/GameStateBase.h"
 #include "VWGameStateBase.generated.h"
 
+// Forward declarations
+class UGGPONetwork;
+
 #define NETWORK_GRAPH_STEPS 720
 
 UENUM(BlueprintType)
@@ -73,10 +76,8 @@ public:
 private:
 	void RunFrame();
 
-	/** Starts a single player GGPO game session. */
-	bool TryStartSinglePlayerGGPOSession();
 	/** Starts a GGPO game session. */
-	bool TryStartGGPOPlayerSession(const uint16 LocalPort, const int32 NumPlayers, TArray<wchar_t*> PlayerParameters);
+	bool TryStartGGPOPlayerSession(int32 NumPlayers, const UGGPONetwork* NetworkAddresses);
 	/** Starts a GGPO spectating game session. */
 	bool TryStartGGPOSpectatorSession(const uint16 LocalPort, const int32 NumPlayers, wchar_t* HostParameter);
 	/** Gets the inputs from the local player. */

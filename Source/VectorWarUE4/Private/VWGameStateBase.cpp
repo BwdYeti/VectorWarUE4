@@ -4,6 +4,7 @@
 #include "VectorWarPlayerController.h"
 #include "VectorWar/GameStateInterface.h"
 #include "include/ggponet.h"
+#include "GGPOGameInstance.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 #define ARRAYSIZE(a) sizeof(a) / sizeof(a[0])
@@ -15,9 +16,22 @@ void AVWGameStateBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    bSessionStarted = TryStartSinglePlayerGGPOSession();
-    // xxx: bSessionStarted = TryStartGGPOPlayerSession(7000, 4,
-    //    { L"local", L"127.0.0.1:7001", L"127.0.0.1:7002", L"127.0.0.1:7003" });
+    UGGPONetwork* NetworkAddresses = nullptr;
+    int32 NumPlayers = 1;
+
+    // If this is a GGPO game instance
+    UGameInstance* GameInstance = GetGameInstance();
+    UGGPOGameInstance* GgpoGameInstance = Cast<UGGPOGameInstance>(GameInstance);
+    if (GgpoGameInstance != nullptr)
+    {
+        // Get the network addresses
+        NetworkAddresses = GgpoGameInstance->NetworkAddresses;
+        NumPlayers = NetworkAddresses->NumPlayers();
+        // Reset the game instance network addresses
+        GgpoGameInstance->NetworkAddresses = nullptr;
+    }
+
+    bSessionStarted = TryStartGGPOPlayerSession(NumPlayers, NetworkAddresses);
 
     if (bSessionStarted)
     {
@@ -171,57 +185,61 @@ void AVWGameStateBase::RunFrame()
     }
 }
 
-bool AVWGameStateBase::TryStartSinglePlayerGGPOSession()
-{
-    // Get port
-    uint16 LocalPort = 7000;
-    // Get number of players
-    int32 NumPlayers = 1;
-
-    return TryStartGGPOPlayerSession(LocalPort, NumPlayers, { L"local" });
-}
-
 bool AVWGameStateBase::TryStartGGPOPlayerSession(
-    const uint16 LocalPort,
-    const int32 NumPlayers,
-    TArray<wchar_t*> PlayerParameters)
+    int32 NumPlayers,
+    const UGGPONetwork* NetworkAddresses)
 {
     int32 Offset = 0;
-    wchar_t WideIpBuffer[128];
-    uint32 WideIpBufferSize = (uint32)ARRAYSIZE(WideIpBuffer);
-
     GGPOPlayer Players[GGPO_MAX_SPECTATORS + GGPO_MAX_PLAYERS];
-
-    if (NumPlayers > PlayerParameters.Num())
-        return false;
-
-    int32 i;
-    for (i = 0; i < NumPlayers; i++) {
-        const wchar_t* Arg = PlayerParameters[Offset++];
-
-        Players[i].size = sizeof(Players[i]);
-        Players[i].player_num = i + 1;
-        if (!_wcsicmp(Arg, L"local")) {
-            Players[i].type = EGGPOPlayerType::LOCAL;
-            continue;
-        }
-
-        Players[i].type = EGGPOPlayerType::REMOTE;
-        if (swscanf_s(Arg, L"%[^:]:%hd", WideIpBuffer, WideIpBufferSize, &Players[i].u.remote.port) != 2) {
-            return false;
-        }
-        wcstombs_s(nullptr, Players[i].u.remote.ip_address, ARRAYSIZE(Players[i].u.remote.ip_address), WideIpBuffer, _TRUNCATE);
-    }
-    // these are spectators...
     int32 NumSpectators = 0;
-    while (Offset < PlayerParameters.Num()) {
-        Players[i].type = EGGPOPlayerType::SPECTATOR;
-        if (swscanf_s(PlayerParameters[Offset++], L"%[^:]:%hd", WideIpBuffer, WideIpBufferSize, &Players[i].u.remote.port) != 2) {
+
+    uint16 LocalPort;
+
+    // If there are no 
+    if (NetworkAddresses == nullptr)
+    {
+        Players[0].size = sizeof(Players[0]);
+        Players[0].player_num = 1;
+        Players[0].type = EGGPOPlayerType::LOCAL;
+
+        LocalPort = 7000;
+        NumPlayers = 1;
+    }
+    else
+    {
+        if (NumPlayers > NetworkAddresses->NumPlayers())
             return false;
+
+        LocalPort = NetworkAddresses->GetLocalPort();
+
+        int32 i;
+        for (i = 0; i < NumPlayers; i++)
+        {
+            Offset++;
+
+            Players[i].size = sizeof(Players[i]);
+            Players[i].player_num = i + 1;
+            // The local player
+            if (i == NetworkAddresses->GetPlayerIndex()) {
+                Players[i].type = EGGPOPlayerType::LOCAL;
+                continue;
+            }
+
+            Players[i].type = EGGPOPlayerType::REMOTE;
+            Players[i].u.remote.port = (uint16)NetworkAddresses->GetAddress(i)->GetPort();
+            NetworkAddresses->GetAddress(i)->GetIpAddress(Players[i].u.remote.ip_address);
         }
-        wcstombs_s(nullptr, Players[i].u.remote.ip_address, ARRAYSIZE(Players[i].u.remote.ip_address), WideIpBuffer, _TRUNCATE);
-        i++;
-        NumSpectators++;
+        // these are spectators...
+        while (Offset < NetworkAddresses->NumPlayers()) {
+            Offset++;
+
+            Players[i].type = EGGPOPlayerType::SPECTATOR;
+            Players[i].u.remote.port = (uint16)NetworkAddresses->GetAddress(i)->GetPort();
+            NetworkAddresses->GetAddress(i)->GetIpAddress(Players[i].u.remote.ip_address);
+
+            i++;
+            NumSpectators++;
+        }
     }
 
     VectorWarHost::VectorWar_Init(LocalPort, NumPlayers, Players, NumSpectators);
