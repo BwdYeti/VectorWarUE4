@@ -27,14 +27,17 @@ void VectorWar_DisconnectPlayer(int player);
 #define ARRAY_SIZE(n)      (sizeof(n) / sizeof(n[0]))
 #define FRAME_DELAY        2
 
+GGPOSession* ggpo = nullptr;
+
 GameState gs = { 0 };
 NonGameState ngs = { 0 };
+
+int fletcher32_checksum(short* data, size_t len);
+uint32 get_time();
 
 class VECTORWARUE4_API VectorWarHost
 {
 public:
-    static void VectorWar_Init(unsigned short localport, int num_players, GGPOPlayer* players, int num_spectators);
-    static void VectorWar_InitSpectator(unsigned short localport, int num_players, char* host_ip, unsigned short host_port);
     static void VectorWar_RunFrame(int local_input);
     static void VectorWar_Idle(int time);
     static void VectorWar_Exit();

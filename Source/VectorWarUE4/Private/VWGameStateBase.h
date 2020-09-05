@@ -48,6 +48,12 @@ class AVWGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 
+	bool bSessionStarted;
+
+	float ElapsedTime;
+
+	TArray<FNetworkGraphPlayer> NetworkGraphData;
+
 public:
 	virtual void BeginPlay() override;
 
@@ -76,17 +82,63 @@ public:
 private:
 	void RunFrame();
 
+	/** Gets the inputs from the local player. */
+	int32 GetLocalInputs();
+
 	/** Starts a GGPO game session. */
 	bool TryStartGGPOPlayerSession(int32 NumPlayers, const UGGPONetwork* NetworkAddresses);
 	/** Starts a GGPO spectating game session. */
 	bool TryStartGGPOSpectatorSession(const uint16 LocalPort, const int32 NumPlayers, wchar_t* HostParameter);
-	/** Gets the inputs from the local player. */
-	int32 GetLocalInputs();
 
-	bool bSessionStarted;
+    /*
+     * VectorWar_Init --
+     *
+     * Initialize the vector war game.  This initializes the game state and
+     * creates a new network session.
+     */
+	void VectorWar_Init(uint16 localport, int32 num_players, GGPOPlayer* players, int32 num_spectators);
+    /*
+     * VectorWar_InitSpectator --
+     *
+     * Create a new spectator session
+     */
+	void VectorWar_InitSpectator(uint16 localport, int32 num_players, char* host_ip, uint16 host_port);
 
-	float ElapsedTime;
+private:
+    /** Gets a GGPOSessionCallbacks object with its callback functions assigned. */
+    GGPOSessionCallbacks CreateCallbacks();
 
-	TArray<FNetworkGraphPlayer> NetworkGraphData;
+    /*
+     * The begin game callback.  We don't need to do anything special here,
+     * so just return true.
+     */
+    bool __cdecl vw_begin_game_callback(const char*);
+    /*
+     * Save the current state to a buffer and return it to GGPO via the
+     * buffer and len parameters.
+     */
+    bool __cdecl vw_save_game_state_callback(unsigned char** buffer, int32* len, int32* checksum, int32);
+    /*
+     * Makes our current state match the state passed in by GGPO.
+     */
+    bool __cdecl vw_load_game_state_callback(unsigned char* buffer, int32 len);
+    /*
+     * Log the gamestate.  Used by the synctest debugging tool.
+     */
+    bool __cdecl vw_log_game_state(char* filename, unsigned char* buffer, int32);
+    /*
+     * Free a save state buffer previously returned in vw_save_game_state_callback.
+     */
+    void __cdecl vw_free_buffer(void* buffer);
+    /*
+     * Notification from GGPO we should step foward exactly 1 frame
+     * during a rollback.
+     */
+    bool __cdecl vw_advance_frame_callback(int32);
+    /*
+     * Notification from GGPO that something has happened.  Update the status
+     * text at the bottom of the screen to notify the user.
+     */
+    bool __cdecl vw_on_event_callback(GGPOEvent* info);
 
 };
