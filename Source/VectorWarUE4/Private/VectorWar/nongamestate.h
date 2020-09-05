@@ -63,5 +63,5 @@ struct NonGameState {
    ChecksumInfo         periodic;
 
 public:
-   float GetDisconnectTime(int32 index);
+   float GetDisconnectTime(int32 index) const;
 };

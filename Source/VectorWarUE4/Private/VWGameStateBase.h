@@ -48,6 +48,12 @@ class AVWGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 
+    GGPOSession* ggpo = nullptr;
+
+    GameState gs = { 0 };
+    NonGameState ngs = { 0 };
+
+private:
 	bool bSessionStarted;
 
 	float ElapsedTime;
@@ -79,11 +85,47 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Graph")
 	static float GraphValue(int32 Value, FVector2D GraphSize, int32 MinY, int32 MaxY);
 
+    const GameState GetGameState() const;
+    const NonGameState GetNonGameState() const;
+
 private:
-	void RunFrame();
+	void TickGameState();
 
 	/** Gets the inputs from the local player. */
 	int32 GetLocalInputs();
+
+    /*
+     * VectorWar_RunFrame --
+     *
+     * Run a single frame of the game.
+     */
+    void VectorWar_RunFrame(int32 local_input);
+    /*
+     * VectorWar_AdvanceFrame --
+     *
+     * Advances the game state by exactly 1 frame using the inputs specified
+     * for player 1 and player 2.
+     */
+    void VectorWar_AdvanceFrame(int32 inputs[], int32 disconnect_flags);
+    /*
+     * VectorWar_Idle --
+     *
+     * Spend our idle time in ggpo so it can use whatever time we have left over
+     * for its internal bookkeeping.
+     */
+    void VectorWar_Idle(int32 time);
+    void VectorWar_Exit();
+
+    /*
+     * VectorWar_DisconnectPlayer --
+     *
+     * Disconnects a player from this session.
+     */
+    void VectorWar_DisconnectPlayer(int32 player);
+
+    /** Gets stats about the network connection. */
+    TArray<FGGPONetworkStats> VectorWar_GetNetworkStats();
+
 
 	/** Starts a GGPO game session. */
 	bool TryStartGGPOPlayerSession(int32 NumPlayers, const UGGPONetwork* NetworkAddresses);

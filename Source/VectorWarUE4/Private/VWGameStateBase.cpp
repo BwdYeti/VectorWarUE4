@@ -38,7 +38,7 @@ void AVWGameStateBase::BeginPlay()
         OnSessionStarted();
 
         NetworkGraphData.Empty();
-        TArray<FGGPONetworkStats> Network = UGameStateInterface::NetworkStats();
+        TArray<FGGPONetworkStats> Network = VectorWar_GetNetworkStats();
         int32 Count = Network.Num();
         for (int32 i = 0; i < Count; i++)
         {
@@ -65,9 +65,9 @@ void AVWGameStateBase::Tick(float DeltaSeconds)
         if (msg.message == WM_QUIT) { }
     }
     int32 IdleMs = (int32)(ONE_FRAME - (int32)(ElapsedTime * 1000));
-    VectorWarHost::VectorWar_Idle(FMath::Max(0, IdleMs - 1));
+    VectorWar_Idle(FMath::Max(0, IdleMs - 1));
     while (ElapsedTime >= ONE_FRAME) {
-        RunFrame();
+        TickGameState();
 
         ElapsedTime -= ONE_FRAME;
     }
@@ -79,7 +79,7 @@ void AVWGameStateBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
     if (bSessionStarted)
     {
-        VectorWarHost::VectorWar_Exit();
+        VectorWar_Exit();
 
         bSessionStarted = false;
     }
@@ -140,13 +140,22 @@ float AVWGameStateBase::GraphValue(int32 Value, FVector2D GraphSize, int32 MinY,
     return Result;
 }
 
-void AVWGameStateBase::RunFrame()
+const GameState AVWGameStateBase::GetGameState() const
+{
+    return gs;
+}
+const NonGameState AVWGameStateBase::GetNonGameState() const
+{
+    return ngs;
+}
+
+void AVWGameStateBase::TickGameState()
 {
     int32 Input = GetLocalInputs();
-    VectorWarHost::VectorWar_RunFrame(Input);
+    VectorWar_RunFrame(Input);
 
     // Network data
-    TArray<FGGPONetworkStats> Network = UGameStateInterface::NetworkStats();
+    TArray<FGGPONetworkStats> Network = VectorWar_GetNetworkStats();
     for (int32 i = 0; i < NetworkGraphData.Num(); i++)
     {
         TArray<FNetworkGraphData>* PlayerData = &NetworkGraphData[i].PlayerData;
@@ -194,6 +203,108 @@ int32 AVWGameStateBase::GetLocalInputs()
         return Controller->GetVectorWarInput();
     }
     return 0;
+}
+
+void AVWGameStateBase::VectorWar_RunFrame(int32 local_input)
+{
+    GGPOErrorCode result = GGPO_OK;
+    int disconnect_flags;
+    int inputs[MAX_SHIPS] = { 0 };
+
+    if (ngs.local_player_handle != GGPO_INVALID_HANDLE) {
+#if defined(SYNC_TEST)
+        local_input = rand(); // test: use random inputs to demonstrate sync testing
+#endif
+        result = GGPONet::ggpo_add_local_input(ggpo, ngs.local_player_handle, &local_input, sizeof(local_input));
+    }
+
+    // synchronize these inputs with ggpo.  If we have enough input to proceed
+    // ggpo will modify the input list with the correct inputs to use and
+    // return 1.
+    if (GGPO_SUCCEEDED(result)) {
+        result = GGPONet::ggpo_synchronize_input(ggpo, (void*)inputs, sizeof(int) * MAX_SHIPS, &disconnect_flags);
+        if (GGPO_SUCCEEDED(result)) {
+            // inputs[0] and inputs[1] contain the inputs for p1 and p2.  Advance
+            // the game by 1 frame using those inputs.
+            VectorWar_AdvanceFrame(inputs, disconnect_flags);
+        }
+    }
+}
+
+void AVWGameStateBase::VectorWar_AdvanceFrame(int32 inputs[], int32 disconnect_flags)
+{
+    gs.Update(inputs, disconnect_flags);
+
+    // update the checksums to display in the top of the window.  this
+    // helps to detect desyncs.
+    ngs.now.framenumber = gs._framenumber;
+    ngs.now.checksum = fletcher32_checksum((short*)&gs, sizeof(gs) / 2);
+    if ((gs._framenumber % 90) == 0) {
+        ngs.periodic = ngs.now;
+    }
+
+    // Notify ggpo that we've moved forward exactly 1 frame.
+    GGPONet::ggpo_advance_frame(ggpo);
+
+    // Update the performance monitor display.
+    GGPOPlayerHandle handles[MAX_PLAYERS];
+    int count = 0;
+    for (int i = 0; i < ngs.num_players; i++) {
+        if (ngs.players[i].type == EGGPOPlayerType::REMOTE) {
+            handles[count++] = ngs.players[i].handle;
+        }
+    }
+}
+
+void AVWGameStateBase::VectorWar_Idle(int32 time)
+{
+    GGPONet::ggpo_idle(ggpo, time);
+}
+
+void AVWGameStateBase::VectorWar_Exit()
+{
+    memset(&gs, 0, sizeof(gs));
+    memset(&ngs, 0, sizeof(ngs));
+
+    if (ggpo) {
+        GGPONet::ggpo_close_session(ggpo);
+        ggpo = NULL;
+    }
+}
+
+void AVWGameStateBase::VectorWar_DisconnectPlayer(int32 player)
+{
+    if (player < ngs.num_players) {
+        char logbuf[128];
+        GGPOErrorCode result = GGPONet::ggpo_disconnect_player(ggpo, ngs.players[player].handle);
+        if (GGPO_SUCCEEDED(result)) {
+            sprintf_s(logbuf, ARRAYSIZE(logbuf), "Disconnected player %d.\n", player);
+        }
+        else {
+            sprintf_s(logbuf, ARRAYSIZE(logbuf), "Error while disconnecting player (err:%d).\n", result);
+        }
+    }
+}
+
+TArray<FGGPONetworkStats> AVWGameStateBase::VectorWar_GetNetworkStats()
+{
+    GGPOPlayerHandle RemoteHandles[MAX_PLAYERS];
+    int Count = 0;
+    for (int i = 0; i < ngs.num_players; i++) {
+        if (ngs.players[i].type == EGGPOPlayerType::REMOTE) {
+            RemoteHandles[Count++] = ngs.players[i].handle;
+        }
+    }
+
+    TArray<FGGPONetworkStats> Result;
+    for (int i = 0; i < Count; i++)
+    {
+        FGGPONetworkStats Stats = { 0 };
+        GGPONet::ggpo_get_network_stats(ggpo, RemoteHandles[i], &Stats);
+        Result.Add(Stats);
+    }
+
+    return Result;
 }
 
 bool AVWGameStateBase::TryStartGGPOPlayerSession(
