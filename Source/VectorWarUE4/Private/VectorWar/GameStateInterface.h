@@ -9,6 +9,7 @@
 
 // Forward declarations
 struct Bullet;
+class AVWGameStateBase;
 
 /**
  * 
@@ -21,39 +22,39 @@ class VECTORWARUE4_API UGameStateInterface : public UBlueprintFunctionLibrary
 public:
 	/** Gets the number of ships in the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static int32 ShipCount();
+	static int32 ShipCount(const AVWGameStateBase* VWGameState);
 
 	/** Gets the total number of bullets allocated by active ships. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static int32 BulletCount();
+	static int32 BulletCount(const AVWGameStateBase* VWGameState);
 
 	/**
 	 * Gets the Transform of a player's ship.
 	 * @param Index						Index of the player
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static FTransform ShipTransform(int32 Index);
+	static FTransform ShipTransform(const AVWGameStateBase* VWGameState, int32 Index);
 
 	/**
 	 * Gets a player's score.
 	 * @param Index						Index of the player
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static int32 ShipScore(int32 Index);
+	static int32 ShipScore(const AVWGameStateBase* VWGameState, int32 Index);
 
 	/**
 	 * Gets whether a bullet is enabled.
 	 * @param Index						Bullet index
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static bool BulletEnabled(int32 Index);
+	static bool BulletEnabled(const AVWGameStateBase* VWGameState, int32 Index);
 
 	/**
 	 * Gets the Transform of a bullet.
 	 * @param Index						Bullet index
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static FTransform BulletTransform(int32 Index);
+	static FTransform BulletTransform(const AVWGameStateBase* VWGameState, int32 Index);
 
 private:
 
@@ -61,7 +62,7 @@ private:
 	 * Gets a Bullet.
 	 * @param Index						Bullet index
 	 */
-	static Bullet GetBullet(int32 Index);
+	static Bullet GetBullet(const AVWGameStateBase* VWGameState, int32 Index);
 
 public:
 	/**
@@ -69,32 +70,28 @@ public:
 	 * @param Index						Index of the player
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static FPlayerConnectionInfo ConnectionInfo(int32 Index);
+	static FPlayerConnectionInfo ConnectionInfo(const AVWGameStateBase* VWGameState, int32 Index);
 
 	/**
 	 * Gets a player's disconnection state.
 	 * @param Index						Index of the player
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameState")
-	static float DisconnectTime(int32 Index);
+	static float DisconnectTime(const AVWGameStateBase* VWGameState, int32 Index);
 
 	/** Gets the frame number of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-	static int32 FrameNumber();
+	static int32 FrameNumber(const AVWGameStateBase* VWGameState);
 
 	/** Gets the checksum of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-	static int32 Checksum();
+	static int32 Checksum(const AVWGameStateBase* VWGameState);
 
 	/** Gets the frame number of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-	static int32 PeriodicFrame();
+	static int32 PeriodicFrame(const AVWGameStateBase* VWGameState);
 
 	/** Gets the checksum of the game state. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-	static int32 PeriodicChecksum();
-
-	/** Gets stats about the network connection. */
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GGPO")
-	static TArray<FGGPONetworkStats> NetworkStats();
+	static int32 PeriodicChecksum(const AVWGameStateBase* VWGameState);
 };

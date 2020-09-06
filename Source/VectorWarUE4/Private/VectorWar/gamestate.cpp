@@ -10,7 +10,10 @@
 #include <stdio.h>
 #include <math.h>
 
-extern GGPOSession *ggpo;
+//@Debug: doesn't work as is with ggpo a member variable in VWGameStateBase
+// if needed, find an alternate solution, like giving GameState a pointer to
+// the session
+//extern GGPOSession *ggpo;
 
 static double
 degtorad(double deg)
@@ -75,7 +78,7 @@ void GameState::ParseShipInputs(int inputs, int i, double *heading, double *thru
 {
    Ship *ship = _ships + i;
 
-   GGPONet::ggpo_log(ggpo, "parsing ship %d inputs: %d.\n", i, inputs);
+   //GGPONet::ggpo_log(ggpo, "parsing ship %d inputs: %d.\n", i, inputs);
 
    if (inputs & INPUT_ROTATE_RIGHT) {
       *heading = (ship->heading + ROTATE_INCREMENT) % 360;
@@ -99,13 +102,13 @@ void GameState::MoveShip(int which, double heading, double thrust, int fire)
 {
    Ship *ship = _ships + which;
    
-   GGPONet::ggpo_log(ggpo, "calculation of new ship coordinates: (thrust:%.4f heading:%.4f).\n", thrust, heading);
+   //GGPONet::ggpo_log(ggpo, "calculation of new ship coordinates: (thrust:%.4f heading:%.4f).\n", thrust, heading);
 
    ship->heading = (int)heading;
 
    if (ship->cooldown == 0) {
       if (fire) {
-         GGPONet::ggpo_log(ggpo, "firing bullet.\n");
+         //GGPONet::ggpo_log(ggpo, "firing bullet.\n");
          for (int i = 0; i < MAX_BULLETS; i++) {
             double dx = ::cos(degtorad(ship->heading));
             double dy = ::sin(degtorad(ship->heading));
@@ -135,11 +138,11 @@ void GameState::MoveShip(int which, double heading, double thrust, int fire)
          ship->velocity.dy = (ship->velocity.dy * SHIP_MAX_THRUST) / mag;
       }
    }
-   GGPONet::ggpo_log(ggpo, "new ship velocity: (dx:%.4f dy:%2.f).\n", ship->velocity.dx, ship->velocity.dy);
+   //GGPONet::ggpo_log(ggpo, "new ship velocity: (dx:%.4f dy:%2.f).\n", ship->velocity.dx, ship->velocity.dy);
 
    ship->position.x += ship->velocity.dx;
    ship->position.y += ship->velocity.dy;
-   GGPONet::ggpo_log(ggpo, "new ship position: (dx:%.4f dy:%2.f).\n", ship->position.x, ship->position.y);
+   //GGPONet::ggpo_log(ggpo, "new ship position: (dx:%.4f dy:%2.f).\n", ship->position.x, ship->position.y);
 
    if (ship->position.x - ship->radius < _bounds.left || 
        ship->position.x + ship->radius > _bounds.right) {

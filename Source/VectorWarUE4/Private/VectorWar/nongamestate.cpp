@@ -28,7 +28,7 @@ void NonGameState::SetDisconnectTimeout(GGPOPlayerHandle handle, int when, int t
     }
 }
 
-float NonGameState::GetDisconnectTime(int32 index)
+float NonGameState::GetDisconnectTime(int32 index) const
 {
     FPlayerConnectionInfo info = players[index];
     return ((timeGetTime() - info.disconnect_start) * 1.0f) / info.disconnect_timeout;
