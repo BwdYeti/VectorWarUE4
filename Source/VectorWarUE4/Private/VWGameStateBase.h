@@ -124,6 +124,7 @@ private:
     void VectorWar_DisconnectPlayer(int32 player);
 
     /** Gets stats about the network connection. */
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game State")
     TArray<FGGPONetworkStats> VectorWar_GetNetworkStats();
 
 
